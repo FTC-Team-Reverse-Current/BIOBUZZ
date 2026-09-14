@@ -6,8 +6,9 @@ import dev.nextftc.robot.opmode.NextTeleop
 import org.firstinspires.ftc.teamcode.BiobuzzBot
 
 @NextTeleop(name = "Base TeleOp")
-class BaseTele(val robot: BiobuzzBot) : NextOpMode(robot) {
-
+class BaseTele(
+    val robot: BiobuzzBot,
+) : NextOpMode(robot) {
     override fun periodic() {
         Telemetry.log("Currently Running!")
     }
