@@ -18,12 +18,14 @@ class Drivetrain : Mechanism {
     val imu = NextIMU("imu")
 
     fun imuInit() {
-        imu.initialize(IMU.Parameters(
-            RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
-            )
-        ))
+        imu.initialize(
+            IMU.Parameters(
+                RevHubOrientationOnRobot(
+                    RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                    RevHubOrientationOnRobot.UsbFacingDirection.FORWARD,
+                ),
+            ),
+        )
     }
 
     fun startDrivetrain(gamepad: Gamepad) {
@@ -33,7 +35,7 @@ class Drivetrain : Mechanism {
             backLeft,
             backRight,
             gamepad,
-            {imu.yawPitchRollAngles.getYaw(AngleUnit.RADIANS)}
+            { imu.yawPitchRollAngles.getYaw(AngleUnit.RADIANS) },
         ).schedule()
     }
 }
