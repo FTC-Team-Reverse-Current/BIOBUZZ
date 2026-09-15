@@ -14,6 +14,7 @@ class BaseTele(
     }
 
     override fun start() {
+        robot.drivetrain.imuInit()
         robot.drivetrain.startDrivetrain(gamepad1)
     }
 }
