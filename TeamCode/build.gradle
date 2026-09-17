@@ -62,6 +62,24 @@ kotlin {
 
 dependencies {
     implementation project(':FtcRobotController')
+    implementation 'dev.nextftc.v2:control:0.2.0'
+    implementation 'dev.nextftc.v2:hardware:0.2.0'
+    implementation 'dev.nextftc.v2:robot:0.2.0'
+    implementation "com.bylazar:battery:1.0.3"
+    implementation "com.bylazar:camerastream:1.0.0"
+    implementation "com.bylazar:capture:1.0.3"
+    implementation "com.bylazar:configurables:1.0.5"
+    implementation "com.bylazar:field:1.0.7"
+    implementation "com.bylazar:fullpanels:1.0.13"
+    implementation "com.bylazar:gamepad:1.0.4"
+    implementation "com.bylazar:graph:1.0.4"
+    implementation "com.bylazar:lights:1.0.3"
+    implementation "com.bylazar:limelightproxy:1.0.4"
+    implementation "com.bylazar:opmodecontrol:1.0.3"
+    implementation "com.bylazar:pinger:1.0.3"
+    implementation "com.bylazar:telemetry:1.0.5"
+    implementation "com.bylazar:themes:1.0.3"
+    implementation "com.bylazar:utils:1.0.4"
     implementation 'dev.nextftc.v2:control:0.2.1'
     implementation 'dev.nextftc.v2:hardware:0.2.1'
     implementation 'dev.nextftc.v2:robot:0.2.1'
