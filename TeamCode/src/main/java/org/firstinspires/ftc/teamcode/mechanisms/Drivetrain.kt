@@ -22,7 +22,7 @@ class Drivetrain : Mechanism {
             IMU.Parameters(
                 RevHubOrientationOnRobot(
                     RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                    RevHubOrientationOnRobot.UsbFacingDirection.FORWARD,
+                    RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD,
                 ),
             ),
         )
