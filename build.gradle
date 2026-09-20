@@ -6,16 +6,15 @@
 
 buildscript {
     ext.kotlin_version = '2.4.20'
-
     repositories {
         mavenCentral()
         google()
     }
-
     dependencies {
         classpath 'com.android.tools.build:gradle:8.7.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.0"
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.10'
+
     }
 }
 
@@ -31,9 +30,6 @@ allprojects {
     repositories {
         mavenCentral()
         google()
-        maven {
-            url = "https://mymaven.bylazar.com/releases"
-        }
     }
 }
 

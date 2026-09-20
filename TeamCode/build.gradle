@@ -1,3 +1,7 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+apply plugin: 'com.android.application'
+
 //
 // build.gradle in TeamCode
 //
@@ -10,42 +14,43 @@
 
 // Custom definitions may go here
 
-// Include common definitions from above.
-
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
+apply plugin: 'com.android.application'
+apply plugin: 'dev.frozenmilk.sinister.sloth.load'
 apply plugin: 'kotlin-android'
-apply plugin: 'org.jetbrains.kotlin.android'
 
 buildscript {
     repositories {
-        mavenCentral()
         google()
+        mavenCentral()
         maven {
             url "https://repo.dairy.foundation/releases"
         }
     }
     dependencies {
-        classpath "dev.frozenmilk:Load:0.3.2"
+        classpath "dev.frozenmilk:Load:0.3.0"
     }
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'dev.frozenmilk.sinister.sloth.load'
-
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_17
+    }
+}
 
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
 
-    defaultConfig {
-        minSdk 24
-    }
-
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
-}
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
 repositories {
     maven {
         url = "https://repo.dairy.foundation/releases"
@@ -59,8 +64,10 @@ dependencies {
     implementation project(':FtcRobotController')
 }
 
-configurations.configureEach {
+
+
+configurations.all {
     resolutionStrategy {
-        cacheChangingModulesFor(0, "seconds")
+        cacheChangingModulesFor 0, 'seconds'
     }
 }
