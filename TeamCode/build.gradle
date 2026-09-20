@@ -13,6 +13,13 @@ apply plugin: 'com.android.application'
 // before doing so.
 
 // Custom definitions may go here
+
+apply from: '../build.common.gradle'
+apply from: '../build.dependencies.gradle'
+apply plugin: 'com.android.application'
+apply plugin: 'dev.frozenmilk.sinister.sloth.load'
+apply plugin: 'kotlin-android'
+
 buildscript {
     repositories {
         google()
@@ -22,24 +29,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath "dev.frozenmilk:Load:0.3.1"
-    }
-}
-
-apply from: '../build.common.gradle'
-apply from: '../build.dependencies.gradle'
-apply plugin: 'com.android.application'
-apply plugin: 'dev.frozenmilk.sinister.sloth.load'
-apply plugin: 'kotlin-android'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'dev.frozenmilk.sinister.sloth.load'
-
-android {
-    namespace = 'org.firstinspires.ftc.teamcode'
-
-
-    defaultConfig {
-        minSdk 24
+        classpath "dev.frozenmilk:Load:0.3.0"
     }
 }
 
@@ -53,45 +43,31 @@ android {
     namespace = 'org.firstinspires.ftc.teamcode'
 
     packagingOptions {
-        jniLibs {
-            pickFirsts += ['**/*.so']
-        }
         jniLibs.useLegacyPackaging true
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
-
-kotlin {
-    compilerOptions {
-        jvmTarget = JvmTarget.JVM_17
+repositories {
+    maven {
+        url = "https://repo.dairy.foundation/releases"
+    }
+    maven {
+        url = "https://repo.dairy.foundation/snapshots"
     }
 }
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation 'dev.nextftc.v2:control:0.2.0'
-    implementation 'dev.nextftc.v2:hardware:0.2.0'
-    implementation 'dev.nextftc.v2:robot:0.2.0'
-    implementation "com.bylazar:battery:1.0.3"
-    implementation "com.bylazar:camerastream:1.0.0"
-    implementation "com.bylazar:capture:1.0.3"
-    implementation "com.bylazar:configurables:1.0.5"
-    implementation "com.bylazar:field:1.0.7"
-    implementation "com.bylazar:fullpanels:1.0.13"
-    implementation "com.bylazar:gamepad:1.0.4"
-    implementation "com.bylazar:graph:1.0.4"
-    implementation "com.bylazar:lights:1.0.3"
-    implementation "com.bylazar:limelightproxy:1.0.4"
-    implementation "com.bylazar:opmodecontrol:1.0.3"
-    implementation "com.bylazar:pinger:1.0.3"
-    implementation "com.bylazar:telemetry:1.0.5"
-    implementation "com.bylazar:themes:1.0.3"
-    implementation "com.bylazar:utils:1.0.4"
-    implementation 'dev.nextftc.v2:control:0.2.1'
-    implementation 'dev.nextftc.v2:hardware:0.2.1'
-    implementation 'dev.nextftc.v2:robot:0.2.1'
+}
+
+
+
+configurations.all {
+    resolutionStrategy {
+        cacheChangingModulesFor 0, 'seconds'
+    }
 }
