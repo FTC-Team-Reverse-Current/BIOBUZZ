@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.IMU
 import dev.nextftc.hardware.actuators.NextMotor
 import dev.nextftc.hardware.sensors.NextIMU
 import dev.nextftc.robot.Mechanism
-import dev.nextftc.robot.drive.mecanumDriveFieldCentric
+import dev.nextftc.robot.drive.mecanumDrive
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 
 class Drivetrain : Mechanism {
@@ -29,13 +29,12 @@ class Drivetrain : Mechanism {
     }
 
     fun startDrivetrain(gamepad: Gamepad) {
-        mecanumDriveFieldCentric(
+        mecanumDrive(
             frontLeft,
             frontRight,
             backLeft,
             backRight,
             gamepad,
-            { imu.yawPitchRollAngles.getYaw(AngleUnit.RADIANS) },
         ).schedule()
     }
 }
