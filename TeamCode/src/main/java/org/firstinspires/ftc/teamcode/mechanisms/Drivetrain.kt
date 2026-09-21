@@ -16,6 +16,8 @@ class Drivetrain : Mechanism {
     val backLeft = NextMotor("backLeft")
     val backRight = NextMotor("backRight")
 
+
+
     val imu = NextIMU("imu")
 
     fun imuInit() {
@@ -29,7 +31,15 @@ class Drivetrain : Mechanism {
         )
     }
 
+    fun initDriveSettings() {
+        frontRight.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
+        backRight.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
+        frontLeft.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
+        backLeft.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
+    }
+
     fun startDrivetrain(gamepad: Gamepad) {
+
         mecanumDrive(
             frontLeft,
             frontRight,
