@@ -18,8 +18,8 @@ fun mecanumDrive(
 ): Command = Commands.infinite {
     val powers = kinematics.calculate(
         DriveInput(
-            y = gamepad.left_stick_x.toDouble() * scalar,
-            x = -gamepad.left_stick_y.toDouble() * scalar,
+            y = gamepad.right_stick_x.toDouble() * scalar,
+            x = -gamepad.left_stick_x.toDouble() * scalar,
             rx = gamepad.right_stick_y.toDouble() * scalar,
         ),
     )
