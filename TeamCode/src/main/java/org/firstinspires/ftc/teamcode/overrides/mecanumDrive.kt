@@ -4,7 +4,7 @@ import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.commands.Commands
 import com.qualcomm.robotcore.hardware.Gamepad
 import dev.nextftc.control.drive.DriveInput
-import dev.nextftc.control.drive.MecanumKinematics
+import org.firstinspires.ftc.teamcode.overrides.MecanumKinematics
 import dev.nextftc.hardware.actuators.NextMotor
 import dev.nextftc.robot.drive.scalar
 

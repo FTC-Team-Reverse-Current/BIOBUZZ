@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.mechanisms
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.IMU
-import dev.nextftc.control.drive.MecanumKinematics
+import org.firstinspires.ftc.teamcode.overrides.MecanumKinematics
 import dev.nextftc.hardware.actuators.NextMotor
 import dev.nextftc.hardware.sensors.NextIMU
 import dev.nextftc.robot.Mechanism
