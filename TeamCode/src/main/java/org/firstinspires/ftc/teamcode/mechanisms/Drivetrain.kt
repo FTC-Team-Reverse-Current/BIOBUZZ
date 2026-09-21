@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode.mechanisms
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.IMU
+import org.firstinspires.ftc.teamcode.overrides.MecanumKinematics
 import dev.nextftc.hardware.actuators.NextMotor
 import dev.nextftc.hardware.sensors.NextIMU
 import dev.nextftc.robot.Mechanism
-import dev.nextftc.robot.drive.mecanumDrive
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
+import org.firstinspires.ftc.teamcode.overrides.mecanumDrive
 
 class Drivetrain : Mechanism {
     val frontLeft = NextMotor("frontLeft")
@@ -35,6 +36,7 @@ class Drivetrain : Mechanism {
             backLeft,
             backRight,
             gamepad,
+            MecanumKinematics(1.2)
         ).schedule()
     }
 }
