@@ -15,6 +15,5 @@ class BaseTele(
 
     override fun start() {
         robot.drivetrain.startDrivetrain(gamepad1)
-        robot.drivetrain.initDriveSettings()
     }
 }

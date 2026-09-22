@@ -26,21 +26,25 @@ data class MecanumWheelPowers(
  * Applies a strafe compensation factor to account for mecanum wheels being
  * physically less efficient strafing than driving forward/backward.
  */
-class MecanumKinematics @JvmOverloads constructor(private val strafeCompensation: Double = 1.1) :
-    DriveKinematics<MecanumWheelPowers> {
-    override fun calculate(input: DriveInput): MecanumWheelPowers {
-        val compensatedY = input.y * strafeCompensation
+class MecanumKinematics
+    @JvmOverloads
+    constructor(
+        private val strafeCompensation: Double = 1.1,
+    ) : DriveKinematics<MecanumWheelPowers> {
+        override fun calculate(input: DriveInput): MecanumWheelPowers {
+            val compensatedY = input.y * strafeCompensation
 
-        val denominator = max(
-            compensatedY.absoluteValue + input.x.absoluteValue + input.rx.absoluteValue,
-            1.0,
-        )
+            val denominator =
+                max(
+                    compensatedY.absoluteValue + input.x.absoluteValue + input.rx.absoluteValue,
+                    1.0,
+                )
 
-        return MecanumWheelPowers(
-            frontLeft = (input.x - compensatedY + input.rx) / denominator,
-            frontRight = (input.x - compensatedY - input.rx) / denominator,
-            backLeft = (input.x + compensatedY + input.rx) / denominator,
-            backRight = (input.x + compensatedY - input.rx) / denominator,
-        )
+            return MecanumWheelPowers(
+                frontLeft = (input.x - compensatedY + input.rx) / denominator,
+                frontRight = (input.x - compensatedY - input.rx) / denominator,
+                backLeft = (input.x + compensatedY + input.rx) / denominator,
+                backRight = (input.x + compensatedY - input.rx) / denominator,
+            )
+        }
     }
-}
