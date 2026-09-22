@@ -22,6 +22,7 @@ plugins {
     // Note for FTC Teams: Do not modify this yourself.
     id 'com.android.application' version '9.2.1' apply false
     id 'com.android.library' version '9.2.1' apply false
+    id("dev.detekt") version("2.0.0-alpha.6") apply false
 }
 
 // This is now required because aapt2 has to be downloaded from the

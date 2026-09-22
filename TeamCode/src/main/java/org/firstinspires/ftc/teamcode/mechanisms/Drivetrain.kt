@@ -11,6 +11,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.overrides.MecanumKinematics
 import org.firstinspires.ftc.teamcode.overrides.mecanumDrive
 
+const val STRAFE_COMPENSATION = 1.2
+
 class Drivetrain : Mechanism {
     val frontLeft = NextMotor("frontLeft")
     val frontRight = NextMotor("frontRight")
@@ -42,7 +44,7 @@ class Drivetrain : Mechanism {
             backLeft,
             backRight,
             gamepad,
-            MecanumKinematics(1.2),
+            MecanumKinematics(STRAFE_COMPENSATION),
         ).schedule()
     }
 }
