@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 apply plugin: 'com.android.application'
+apply plugin: 'dev.detekt'
 
 //
 // build.gradle in TeamCode
@@ -64,7 +65,11 @@ dependencies {
     implementation project(':FtcRobotController')
 }
 
-
+detekt {
+    toolVersion = "2.0.0-alpha.6"
+    config.setFrom(file("config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
+}
 
 configurations.all {
     resolutionStrategy {

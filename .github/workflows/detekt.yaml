@@ -1,0 +1,23 @@
+name: detekt
+
+on:
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'TeamCode/**/*.kt'
+      - 'TeamCode/**/*.kts'
+
+jobs:
+  detekt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: detekt
+        uses: natiginfo/action-detekt-all@v3
+        with:
+          detekt-version: '2.0.0-alpha.3'
+          java-distribution: 'temurin'
+          java-version: '25'
