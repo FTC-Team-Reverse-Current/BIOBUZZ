@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop
 
+import dev.nextftc.control.feedback.PIDCoefficients
+import dev.nextftc.control.feedback.PIDController
 import dev.nextftc.robot.Telemetry
 import dev.nextftc.robot.opmode.NextOpMode
 import dev.nextftc.robot.opmode.NextTeleop
@@ -15,5 +17,6 @@ class BaseTele(
 
     override fun start() {
         robot.drivetrain.startDrivetrain(gamepad1)
+        robot.drivetrain.initDriveSettings()
     }
 }
