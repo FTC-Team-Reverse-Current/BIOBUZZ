@@ -5,7 +5,7 @@ import dev.nextftc.robot.opmode.NextOpMode
 import dev.nextftc.robot.opmode.NextTeleop
 import org.firstinspires.ftc.teamcode.BiobuzzBot
 
-@NextTeleop(name = "Base TeleOp")
+@NextTeleop(name = "Testing TeleOp")
 class TestTeleop(
     val robot: BiobuzzBot,
 ) : NextOpMode(robot) {
@@ -15,6 +15,7 @@ class TestTeleop(
 
     override fun start() {
         robot.drivetrain.startDrivetrain(gamepad1)
+        robot.testingmechanisms.InitTestingMechanisms((gamepad1))
     }
 
 }
