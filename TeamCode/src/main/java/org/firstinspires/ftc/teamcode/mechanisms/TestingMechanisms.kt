@@ -16,11 +16,11 @@ class TestingMechanisms : Mechanism {
 
     val TestingServo = NextServo("TestingServo")
     val TestingMotor = NextMotor("TestingMotor")
-    fun motorOn() = infinite { TestingMotor.throttle = 1.0 }
+    fun motorOn() = infinite { TestingMotor.throttle = -1.0 }
     fun motorOff() = instant { TestingMotor.throttle = 0.0 }
 
     fun ServoOn() = instant { TestingServo.position = 1.0 }
-    fun ServoOff() = instant {TestingServo.position = 0.25}
+    fun ServoOff() = instant {TestingServo.position = 0.3}
 
     fun InitTestingMechanisms(gamepad : Gamepad) {
         val gamepad = CommandGamepad(gamepad)

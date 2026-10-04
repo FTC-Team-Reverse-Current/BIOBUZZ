@@ -6,8 +6,8 @@ import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain
 import org.firstinspires.ftc.teamcode.mechanisms.TestingMechanisms
 
 class BiobuzzBot : NextRobot {
-    val drivetrain = Drivetrain()
+    //val drivetrain = Drivetrain()
     val testingmechanisms = TestingMechanisms()
 
-    override val mechanisms: Set<Mechanism> = setOf(drivetrain, testingmechanisms)
+    override val mechanisms: Set<Mechanism> = setOf(testingmechanisms)
 }
