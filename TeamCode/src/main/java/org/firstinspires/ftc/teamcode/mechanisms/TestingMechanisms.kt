@@ -19,8 +19,9 @@ class TestingMechanisms : Mechanism {
     fun motorOn() = infinite { TestingMotor.throttle = -1.0 }
     fun motorOff() = instant { TestingMotor.throttle = 0.0 }
 
-    fun ServoOn() = instant { TestingServo.position = 1.0 }
-    fun ServoOff() = instant {TestingServo.position = 0.3}
+    fun ServoOn() = infinite { TestingServo.position = TestingServo.position+0.1 }
+    fun Servo1Off() = infinite { TestingServo.position = TestingServo.position}
+    fun ServoOff() = infinite {TestingServo.position = TestingServo.position-0.1}
 
     fun InitTestingMechanisms(gamepad : Gamepad) {
         val gamepad = CommandGamepad(gamepad)
@@ -29,7 +30,9 @@ class TestingMechanisms : Mechanism {
         gamepad.a.onFalse(motorOff())
 
         gamepad.b.onTrue(ServoOn())
+        gamepad.b.onFalse(Servo1Off())
         gamepad.x.onTrue(ServoOff())
+        gamepad.x.onFalse(Servo1Off())
     }
 
 }

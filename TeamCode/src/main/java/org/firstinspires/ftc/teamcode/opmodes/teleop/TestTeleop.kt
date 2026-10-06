@@ -14,7 +14,7 @@ class TestTeleop(
     }
 
     override fun start() {
-        //robot.drivetrain.startDrivetrain(gamepad1)
+        robot.drivetrain.startDrivetrain(gamepad1)
         robot.testingmechanisms.InitTestingMechanisms((gamepad1))
     }
 

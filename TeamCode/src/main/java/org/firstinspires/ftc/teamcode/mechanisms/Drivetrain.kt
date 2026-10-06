@@ -7,6 +7,7 @@ import dev.nextftc.hardware.actuators.NextMotor
 import dev.nextftc.hardware.sensors.NextIMU
 import dev.nextftc.robot.Mechanism
 import dev.nextftc.robot.drive.mecanumDriveFieldCentric
+import dev.nextftc.robot.triggers.CommandGamepad
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 
 class Drivetrain : Mechanism {
@@ -28,6 +29,20 @@ class Drivetrain : Mechanism {
         )
     }
 
+    fun AllMotorsOn() = infinite {
+        frontLeft.throttle = 0.25
+        frontRight.throttle = 0.25
+        backLeft.throttle = 0.25
+        backRight.throttle = 0.25
+    }
+
+    fun AllMotorsOff() = instant {
+        frontLeft.throttle = 0.0
+        frontRight.throttle = 0.0
+        backLeft.throttle = 0.0
+        backRight.throttle = 0.0
+    }
+
     fun startDrivetrain(gamepad: Gamepad) {
         mecanumDriveFieldCentric(
             frontLeft,
@@ -37,5 +52,9 @@ class Drivetrain : Mechanism {
             gamepad,
             { imu.yawPitchRollAngles.getYaw(AngleUnit.RADIANS) },
         ).schedule()
+        val gamepad = CommandGamepad(gamepad)
+        gamepad.y.onTrue(AllMotorsOn())
+        gamepad.y.onFalse(AllMotorsOff())
+
     }
 }
