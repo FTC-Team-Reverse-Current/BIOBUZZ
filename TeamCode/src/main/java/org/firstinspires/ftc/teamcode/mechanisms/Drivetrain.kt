@@ -33,6 +33,7 @@ class Drivetrain : Mechanism {
     }
 
     override fun periodic() {
+        super.periodic()
         Telemetry.log("frontLeft", frontLeft.encoderVelocity)
         Telemetry.log("frontRight", frontRight.encoderVelocity)
         Telemetry.log("backLeft", backLeft.encoderVelocity)
