@@ -6,10 +6,13 @@ import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.IMU
 import dev.nextftc.hardware.actuators.NextMotor
 import dev.nextftc.hardware.sensors.NextIMU
+import dev.nextftc.hardware.sensors.NextPinpoint
 import dev.nextftc.robot.Mechanism
+import dev.nextftc.robot.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.teamcode.overrides.MecanumKinematics
 import org.firstinspires.ftc.teamcode.overrides.mecanumDrive
+import org.firstinspires.ftc.teamcode.overrides.mecanumDriveFieldCentric
 
 const val STRAFE_COMPENSATION = 1.2
 
@@ -19,32 +22,43 @@ class Drivetrain : Mechanism {
     val backLeft = NextMotor("backLeft")
     val backRight = NextMotor("backRight")
 
-    val imu = NextIMU("imu")
+    val pinpoint = NextPinpoint("pinpoint")
+
 
     constructor() {
-        imu.initialize(
-            IMU.Parameters(
-                RevHubOrientationOnRobot(
-                    RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                    RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD,
-                ),
-            ),
-        )
-
         frontRight.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
         backRight.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
         frontLeft.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
         backLeft.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
     }
 
+    override fun periodic() {
+        Telemetry.log("frontLeft", frontLeft.encoderVelocity)
+        Telemetry.log("frontRight", frontRight.encoderVelocity)
+        Telemetry.log("backLeft", backLeft.encoderVelocity)
+        Telemetry.log("backRight", backRight.encoderVelocity)
+        Telemetry.update()
+        pinpoint.update()
+    }
+
     fun startDrivetrain(gamepad: Gamepad) {
+//        mecanumDriveFieldCentric(
+//            frontLeft,
+//            frontRight,
+//            backLeft,
+//            backRight,
+//            gamepad,
+//            { pinpoint.pose.heading.toDouble() },
+//            MecanumKinematics(STRAFE_COMPENSATION),
+//        ).schedule()
+//    }
         mecanumDrive(
             frontLeft,
             frontRight,
             backLeft,
             backRight,
             gamepad,
-            MecanumKinematics(STRAFE_COMPENSATION),
+            MecanumKinematics(STRAFE_COMPENSATION)
         ).schedule()
     }
 }
