@@ -17,7 +17,7 @@ class P1Mechanisms : Mechanism {
         fun stopintake() = instant {IntakeMotor.throttle=0.0}
 
 
-        gp1.a.whileTrue(runintake())
-        gp1.a.whileFalse(stopintake())
+        gp1.rightTrigger.isOver(0.2).whileTrue(runintake())
+        gp1.rightTrigger.isOver(0.2).whileFalse(stopintake())
     }
 }
