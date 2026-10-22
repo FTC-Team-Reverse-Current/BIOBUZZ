@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode
 
-import dev.nextftc.hardware.sensors.NextPinpoint
 import dev.nextftc.robot.Mechanism
 import dev.nextftc.robot.NextRobot
-import dev.nextftc.robot.triggers.CommandGamepad
 import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain
-import org.firstinspires.ftc.teamcode.mechanisms.P1Mechanisms
-import org.firstinspires.ftc.teamcode.mechanisms.P2Mechanisms
-import org.firstinspires.ftc.teamcode.mechanisms.TurretRotation
+import org.firstinspires.ftc.teamcode.mechanisms.Flipper
+import org.firstinspires.ftc.teamcode.mechanisms.Intake
+import org.firstinspires.ftc.teamcode.mechanisms.Kicker
+import org.firstinspires.ftc.teamcode.mechanisms.Shooter
+import org.firstinspires.ftc.teamcode.mechanisms.Turret
 
 
 class BiobuzzBot : NextRobot {
@@ -17,10 +17,14 @@ class BiobuzzBot : NextRobot {
     }
 
     val drivetrain = Drivetrain()
-    val p1mechanisms = P1Mechanisms()
+    val intake = Intake()
 
-    val p2mechanisms = P2Mechanisms()
-    val turret = TurretRotation()
+    val shooter = Shooter()
+    val turret = Turret()
 
-    override val mechanisms: Set<Mechanism> = setOf(drivetrain, p1mechanisms, p2mechanisms, turret)
+    val kicker = Kicker()
+
+    val flipper = Flipper()
+
+    override val mechanisms: Set<Mechanism> = setOf(drivetrain, intake, shooter, turret, kicker, flipper)
 }
