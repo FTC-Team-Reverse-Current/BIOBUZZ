@@ -8,10 +8,10 @@ class Turret : Mechanism {
 
     fun turnTurret(turnSpeed: () -> Double) = infinite {
         turretServo.position =
-            (turretServo.position +  (turnSpeed() * 0.1) ).coerceIn(0.0, 1.0)
+            (turretServo.position +  (turnSpeed() * 0.1) ).coerceIn(0.2, 0.8)
     }
 
-        fun turretGoto(position: Double) = instant {
+    fun turretGoto(position: Double) = instant {
         turretServo.position = position
     }
 }
