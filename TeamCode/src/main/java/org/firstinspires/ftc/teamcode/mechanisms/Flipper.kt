@@ -7,10 +7,9 @@ import kotlin.math.floor
 class Flipper : Mechanism {
     val flipperServo = NextServo("FlipperServo")
 
-    var flipped: Boolean = false
 
     fun flip() = instant {
-        if (flipped) {
+        if (flipperServo.position in 0.0..0.05) {
             flipperServo.position = 0.7
         }
         else {
