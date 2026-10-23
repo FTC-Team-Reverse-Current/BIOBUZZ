@@ -41,7 +41,8 @@ class NewTele(
 
         aux.leftTrigger.isOver(0.1).whileTrue(runShooterCycle()).whileFalse(stopShooterCycle())
 
-        aux.leftStickX.isBetween(-1.0, 1.0).whileTrue(robot.turret.turnTurret(fun() = aux.leftStickX.value))
+//        aux.leftStickX.isBetween(-1.0, 1.0).whileTrue(robot.turret.turnTurret(fun() = aux.leftStickX.value))
+        robot.turret.defaultCommand
 
         aux.a.onTrue(robot.turret.turretGoto(0.5))
         aux.y.onTrue(robot.turret.turretGoto(0.75))
