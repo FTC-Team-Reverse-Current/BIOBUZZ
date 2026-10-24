@@ -30,16 +30,56 @@ class Drivetrain : Mechanism {
         backRight.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
         frontLeft.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
         backLeft.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
+
+        backLeft.direction = NextMotor.Direction.REVERSE
+        frontLeft.direction = NextMotor.Direction.REVERSE
+
     }
 
     override fun periodic() {
-        Telemetry.log("frontLeft", frontLeft.encoderVelocity)
-        Telemetry.log("frontRight", frontRight.encoderVelocity)
-        Telemetry.log("backLeft", backLeft.encoderVelocity)
-        Telemetry.log("backRight", backRight.encoderVelocity)
+//        Telemetry.log("frontLeft", frontLeft.encoderVelocity)
+//        Telemetry.log("frontRight", frontRight.encoderVelocity)
+//        Telemetry.log("backLeft", backLeft.encoderVelocity)
+//        Telemetry.log("backRight", backRight.encoderVelocity)
         Telemetry.update()
         pinpoint.update()
     }
+
+    fun moveForward(throttle: Double) = infinite {
+        frontLeft.throttle = throttle
+        frontRight.throttle = throttle
+        backLeft.throttle = throttle
+        backRight.throttle = throttle
+    }.setEnd {
+        frontLeft.throttle = 0.0
+        frontRight.throttle = 0.0
+        backLeft.throttle = 0.0
+        backRight.throttle = 0.0
+    }
+
+    fun strafeLeft(throttle: Double) = infinite {
+        frontLeft.throttle = -throttle
+        frontRight.throttle = throttle
+        backLeft.throttle = throttle
+        backRight.throttle = -throttle
+    }.setEnd {
+        frontLeft.throttle = 0.0
+        frontRight.throttle = 0.0
+        backLeft.throttle = 0.0
+        backRight.throttle = 0.0
+    }
+    fun strafeRight(throttle: Double) = infinite {
+        frontLeft.throttle = throttle
+        frontRight.throttle = -throttle
+        backLeft.throttle = -throttle
+        backRight.throttle = throttle
+    }.setEnd {
+        frontLeft.throttle = 0.0
+        frontRight.throttle = 0.0
+        backLeft.throttle = 0.0
+        backRight.throttle = 0.0
+    }
+
 
     fun startDrivetrain(gamepad: Gamepad) {
 //        mecanumDriveFieldCentric(
