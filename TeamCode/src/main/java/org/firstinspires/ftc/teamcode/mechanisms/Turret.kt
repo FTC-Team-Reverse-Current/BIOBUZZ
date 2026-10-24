@@ -6,7 +6,8 @@ import dev.nextftc.hardware.actuators.NextServo
 import dev.nextftc.robot.Telemetry
 
 enum class SizeState(var rpm: Double, var position: Double) {
-    POLLEN(Shooter.pollenShootRPM, 0.0), NECTAR(Shooter.nectarShootRPM, 1.0)
+    POLLEN(Shooter.pollenShootRPM, 0.0),
+    NECTAR(Shooter.nectarShootRPM, 0.667)
 }
 class Turret : Mechanism {
     val turretServo = NextServo("TurretServo", cacheTolerance = 0.0005)

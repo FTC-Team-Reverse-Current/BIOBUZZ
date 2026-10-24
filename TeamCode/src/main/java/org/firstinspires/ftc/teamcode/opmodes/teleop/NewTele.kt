@@ -35,12 +35,12 @@ class NewTele(
 
         robot.turret.setSizeState(SizeState.POLLEN)
 
-        driver.rightTrigger.isOver(0.1).whileTrue(robot.intake.runIntake(0.7)).whileFalse(robot.intake.runIntake(0.0))
+        driver.rightTrigger.isOver(0.1).whileTrue(robot.intake.setVoltage(6.0))
         driver.leftTrigger.isOver(0.5).whileTrue(robot.flipper.flip())
 
 //        aux.rightTrigger.isOver(0.1).whileTrue(runShooterCycleNectar()).whileFalse(stopShooterCycle())
-        aux.rightTrigger.isOver(0.1).whileTrue(robot.shootWhenReady(robot.turret.sizeState))
-        aux.leftTrigger.isOver(0.1).whileTrue(robot.kicker.dump())
+        aux.rightTrigger.isOver(0.1).whileTrue(robot.shootWhenReady { robot.turret.sizeState })
+        aux.leftTrigger.isOver(0.1).whileTrue(robot.fullDump())
 
         aux.leftStickX.isBetween(0.1, 1.0).whileTrue(robot.turret.turnTurret { -gamepad2.left_stick_x.toDouble() })
         aux.leftStickX.isBetween(-1.0, -0.1).whileTrue(robot.turret.turnTurret { -gamepad2.left_stick_x.toDouble() })
