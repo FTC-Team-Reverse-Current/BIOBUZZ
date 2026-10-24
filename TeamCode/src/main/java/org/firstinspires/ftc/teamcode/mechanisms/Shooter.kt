@@ -20,18 +20,18 @@ class Shooter : Mechanism {
 
     companion object {
         var nectarShootRPM = 12.0
-        var pollenShootRPM = 9.0
+        var pollenShootRPM = 12.0
     }
 
 
-    fun shoot(sizeState: SizeState) = infinite {
+    fun automatedShoot(sizeState: SizeState) = infinite {
         setVoltage(sizeState.rpm)
     }.setEnd { shooterMotor.voltage = 0.0.volts }
 
-    fun setVelocity(velocity: Double) {
+    fun setVelocity(velocity: Double) = infinite {
         val angular = AngularVelocity(velocity, RotationsPerMinute)
         shooterMotor.setVelocitySetpoint(angular)
-    }
+    }.setEnd { shooterMotor.voltage = 0.0.volts }
 
     fun changeRPM(amount: Double) = instant {
         nectarShootRPM += amount

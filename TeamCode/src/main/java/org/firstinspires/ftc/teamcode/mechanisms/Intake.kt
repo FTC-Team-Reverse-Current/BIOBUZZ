@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.Gamepad
 import dev.nextftc.robot.Mechanism
 import dev.nextftc.hardware.actuators.NextMotor
 import dev.nextftc.robot.triggers.CommandGamepad
+import dev.nextftc.units.volts
 
 class Intake : Mechanism {
     val intakeMotor = NextMotor("IntakeMotor")
@@ -12,5 +13,7 @@ class Intake : Mechanism {
         intakeMotor.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
     }
 
-    fun runIntake(throttle: Double) = infinite { intakeMotor.throttle = throttle }
+    fun setThrottle(throttle: Double) = infinite { intakeMotor.throttle = throttle }
+
+    fun setVoltage(voltage: Double) = infinite { intakeMotor.voltage = voltage.volts }.setEnd { intakeMotor.voltage = 0.0.volts }
 }

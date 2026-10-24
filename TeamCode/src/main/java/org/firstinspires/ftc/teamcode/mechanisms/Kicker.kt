@@ -12,10 +12,10 @@ class Kicker : Mechanism {
 
     constructor() {
         kickerMotor.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.FLOAT
-        kickerMotor.direction = NextMotor.Direction.REVERSE
+        kickerMotor.direction = NextMotor.Direction.FORWARD
     }
 
-    val kickVoltage = (9.0).volts
+    val kickVoltage = (-9.0).volts
 
     fun dump() = infinite {
         kickerMotor.voltage = -kickVoltage

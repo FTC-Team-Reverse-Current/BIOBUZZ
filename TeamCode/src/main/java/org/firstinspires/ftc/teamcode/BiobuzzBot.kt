@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode
 
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.commands.Commands.waitUntil
+import com.pedropathing.ivy.groups.Groups.parallel
 import com.qualcomm.robotcore.hardware.Gamepad
 import dev.nextftc.robot.Mechanism
 import dev.nextftc.robot.NextRobot
@@ -24,7 +25,6 @@ class BiobuzzBot : NextRobot {
     @Suppress("EmptySecondaryConstructor") // Get Detekt off our assess
     constructor() {}
 
-
     val drivetrain = Drivetrain()
     val intake = Intake()
 
@@ -37,16 +37,14 @@ class BiobuzzBot : NextRobot {
 
     override val mechanisms: Set<Mechanism> = setOf(drivetrain, intake, shooter, turret, kicker, flipper)
 
-    fun shootWhenReady(sizeState: SizeState) = command {
-        try {
-            fork(shooter.shoot(sizeState))
-//            waitUntil { abs(shooter.shooterMotor.encoderVelocity.into(RotationsPerMinute) - sizeState.rpm * 500) <= 50 }
-            await(kicker.kick())
-        } finally {
+    fun fullDump() = parallel(
+        kicker.dump(),
+        intake.setVoltage(-6.0)
+    )
 
-        }
-
-    }
+    fun shootWhenReady(sizeState: () -> SizeState) = parallel(
+            shooter.automatedShoot(sizeState()),
+            kicker.kick())
 
     fun moveForward(seconds: Double) = command {
         try {
@@ -54,6 +52,11 @@ class BiobuzzBot : NextRobot {
             wait(seconds)
         } finally {}
     }
+
+    fun runShootCycle() = parallel(
+        shooter.setVelocity(4500.0),
+        kicker.kick()
+    )
 
     fun strafeRightMoveForward(seconds: Double) = command {
         await(drivetrain.strafeRight(0.5).raceWith(waitMs(350.0)))
