@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.mechanisms
+import android.util.Size
 import dev.nextftc.robot.Mechanism
 import dev.nextftc.hardware.actuators.NextMotor
+import dev.nextftc.robot.Telemetry
+import dev.nextftc.robot.coroutine.command
 import dev.nextftc.units.RotationsPerMinute
 import dev.nextftc.units.measuretypes.AngularVelocity
 import dev.nextftc.units.volts
@@ -12,15 +15,34 @@ class Shooter : Mechanism {
         shooterMotor.direction = NextMotor.Direction.FORWARD
 
         // PID and FeedForward Coefficients
-        shooterMotor.velocityConstants.apply { kP=0.1; kI=0.0; kD=0.0; kS=0.0; kV=0.0; kA=0.0 }
+        shooterMotor.velocityConstants.apply { kP=1.0; kI=0.0; kD=0.0; kS=0.0; kV=0.0; kA=0.0 }
     }
 
-    fun setVelocity(velocity: Double) = infinite {
+    companion object {
+        var nectarShootRPM = 12.0
+        var pollenShootRPM = 9.0
+    }
+
+
+    fun shoot(sizeState: SizeState) = infinite {
+        setVoltage(sizeState.rpm)
+    }.setEnd { shooterMotor.voltage = 0.0.volts }
+
+    fun setVelocity(velocity: Double) {
         val angular = AngularVelocity(velocity, RotationsPerMinute)
         shooterMotor.setVelocitySetpoint(angular)
     }
 
-    fun setVoltage(voltage: Double) = infinite {
+    fun changeRPM(amount: Double) = instant {
+        nectarShootRPM += amount
+        pollenShootRPM += amount
+    }
+
+//    fun setVoltage(voltage: Double) = infinite {
+//        shooterMotor.voltage = voltage.volts
+//    }.setEnd { shooterMotor.voltage = 0.0.volts }
+
+    fun setVoltage(voltage: Double) {
         shooterMotor.voltage = voltage.volts
     }
 
