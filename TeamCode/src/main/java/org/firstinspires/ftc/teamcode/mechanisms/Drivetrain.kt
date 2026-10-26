@@ -24,7 +24,6 @@ class Drivetrain : Mechanism {
 
     val pinpoint = NextPinpoint("pinpoint")
 
-
     constructor() {
         frontRight.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
         backRight.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
@@ -33,7 +32,6 @@ class Drivetrain : Mechanism {
 
         backLeft.direction = NextMotor.Direction.REVERSE
         frontLeft.direction = NextMotor.Direction.REVERSE
-
     }
 
     override fun periodic() {
@@ -45,41 +43,44 @@ class Drivetrain : Mechanism {
         pinpoint.update()
     }
 
-    fun moveForward(throttle: Double) = infinite {
-        frontLeft.throttle = throttle
-        frontRight.throttle = throttle
-        backLeft.throttle = throttle
-        backRight.throttle = throttle
-    }.setEnd {
-        frontLeft.throttle = 0.0
-        frontRight.throttle = 0.0
-        backLeft.throttle = 0.0
-        backRight.throttle = 0.0
-    }
+    fun moveForward(throttle: Double) =
+        infinite {
+            frontLeft.throttle = throttle
+            frontRight.throttle = throttle
+            backLeft.throttle = throttle
+            backRight.throttle = throttle
+        }.setEnd {
+            frontLeft.throttle = 0.0
+            frontRight.throttle = 0.0
+            backLeft.throttle = 0.0
+            backRight.throttle = 0.0
+        }
 
-    fun strafeLeft(throttle: Double) = infinite {
-        frontLeft.throttle = -throttle
-        frontRight.throttle = throttle
-        backLeft.throttle = throttle
-        backRight.throttle = -throttle
-    }.setEnd {
-        frontLeft.throttle = 0.0
-        frontRight.throttle = 0.0
-        backLeft.throttle = 0.0
-        backRight.throttle = 0.0
-    }
-    fun strafeRight(throttle: Double) = infinite {
-        frontLeft.throttle = throttle
-        frontRight.throttle = -throttle
-        backLeft.throttle = -throttle
-        backRight.throttle = throttle
-    }.setEnd {
-        frontLeft.throttle = 0.0
-        frontRight.throttle = 0.0
-        backLeft.throttle = 0.0
-        backRight.throttle = 0.0
-    }
+    fun strafeLeft(throttle: Double) =
+        infinite {
+            frontLeft.throttle = -throttle
+            frontRight.throttle = throttle
+            backLeft.throttle = throttle
+            backRight.throttle = -throttle
+        }.setEnd {
+            frontLeft.throttle = 0.0
+            frontRight.throttle = 0.0
+            backLeft.throttle = 0.0
+            backRight.throttle = 0.0
+        }
 
+    fun strafeRight(throttle: Double) =
+        infinite {
+            frontLeft.throttle = throttle
+            frontRight.throttle = -throttle
+            backLeft.throttle = -throttle
+            backRight.throttle = throttle
+        }.setEnd {
+            frontLeft.throttle = 0.0
+            frontRight.throttle = 0.0
+            backLeft.throttle = 0.0
+            backRight.throttle = 0.0
+        }
 
     fun startDrivetrain(gamepad: Gamepad) {
 //        mecanumDriveFieldCentric(
@@ -98,7 +99,7 @@ class Drivetrain : Mechanism {
             backLeft,
             backRight,
             gamepad,
-            MecanumKinematics(STRAFE_COMPENSATION)
+            MecanumKinematics(STRAFE_COMPENSATION),
         ).schedule()
     }
 }

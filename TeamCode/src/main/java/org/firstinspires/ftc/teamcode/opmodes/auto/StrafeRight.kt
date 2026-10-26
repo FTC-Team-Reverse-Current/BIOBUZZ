@@ -4,11 +4,13 @@ import dev.nextftc.robot.opmode.NextAutonomous
 import dev.nextftc.robot.opmode.NextOpMode
 import org.firstinspires.ftc.teamcode.BiobuzzBot
 
+const val RIGHT_STRAFE_TIME = 0.75
+
 @NextAutonomous(name = "Strafe Right Auto", preselectTeleop = "New TeleOp For Competition")
-class StrafeRight(val robot: BiobuzzBot,
+class StrafeRight(
+    val robot: BiobuzzBot,
 ) : NextOpMode(robot) {
-    val moveTime = 5.0
     override fun start() {
-        robot.strafeRightMoveForward(.75).schedule()
+        robot.strafeRightMoveForward(RIGHT_STRAFE_TIME).schedule()
     }
 }
