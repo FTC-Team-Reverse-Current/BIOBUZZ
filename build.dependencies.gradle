@@ -6,6 +6,7 @@ repositories {
     maven { url = "https://central.sonatype.com/repository/maven-snapshots/"}
     maven { url = "https://repo.dairy.foundation/releases"}
     maven { url = "https://repo.dairy.foundation/snapshots" }
+    maven { url = 'https://maven.brott.dev/' }
 
 
 
@@ -35,8 +36,7 @@ dependencies {
     //NextFTC
     implementation 'dev.nextftc.v2:robot:0.2.1'
 
-    //Sloth
-    implementation("dev.frozenmilk.sinister:Sloth:0.3.2")
+    implementation 'com.acmerobotics.dashboard:dashboard:0.6.0'
 
     //Panels
 //    implementation("com.bylazar.sloth:fullpanels:0.3.0+1.0.12")

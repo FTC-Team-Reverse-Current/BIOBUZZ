@@ -1,15 +1,12 @@
 package org.firstinspires.ftc.teamcode
 
+import com.acmerobotics.dashboard.FtcDashboard
 import com.pedropathing.ivy.commands.Commands.waitMs
-import com.pedropathing.ivy.commands.Commands.waitUntil
 import com.pedropathing.ivy.groups.Groups.parallel
-import com.qualcomm.robotcore.hardware.Gamepad
 import dev.nextftc.robot.Mechanism
 import dev.nextftc.robot.NextRobot
 import dev.nextftc.robot.coroutine.command
-import dev.nextftc.units.RotationsPerMinute
-import dev.nextftc.units.measuretypes.AngularVelocity
-import dev.nextftc.units.volts
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain
 import org.firstinspires.ftc.teamcode.mechanisms.Flipper
 import org.firstinspires.ftc.teamcode.mechanisms.Intake
@@ -17,7 +14,6 @@ import org.firstinspires.ftc.teamcode.mechanisms.Kicker
 import org.firstinspires.ftc.teamcode.mechanisms.Shooter
 import org.firstinspires.ftc.teamcode.mechanisms.SizeState
 import org.firstinspires.ftc.teamcode.mechanisms.Turret
-import kotlin.math.abs
 
 const val INTAKE_VOLTAGE = -6.0
 const val AUTO_THROTTLE = 0.3
@@ -27,8 +23,15 @@ const val SECONDS_TO_MS = 1000.0
 const val DEFAULT_SHOOT_RPM = 4500.0
 
 class BiobuzzBot : NextRobot {
+
     @Suppress("EmptySecondaryConstructor") // Get Detekt off our assess
-    constructor() {}
+    constructor() {
+
+    }
+
+    override fun periodic() {
+        super.periodic()
+    }
 
     val drivetrain = Drivetrain()
     val intake = Intake()
@@ -50,7 +53,7 @@ class BiobuzzBot : NextRobot {
 
     fun shootWhenReady(sizeState: () -> SizeState) =
         parallel(
-            shooter.automatedShoot(sizeState()),
+            shooter.setVelocity(3000.0),
             kicker.kick(),
         )
 

@@ -18,7 +18,6 @@ apply plugin: 'dev.detekt'
 apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
 apply plugin: 'com.android.application'
-apply plugin: 'dev.frozenmilk.sinister.sloth.load'
 apply plugin: 'kotlin-android'
 
 buildscript {

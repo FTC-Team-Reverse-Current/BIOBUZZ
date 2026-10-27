@@ -6,23 +6,26 @@ import dev.nextftc.robot.Telemetry
 import dev.nextftc.robot.coroutine.command
 import dev.nextftc.units.RotationsPerMinute
 import dev.nextftc.units.measuretypes.AngularVelocity
+import dev.nextftc.units.radians
 import dev.nextftc.units.volts
 
 class Shooter : Mechanism {
-    val shooterMotor = NextMotor("ShooterMotor")
+    val shooterMotor = NextMotor("ShooterMotor", anglePerCount = (2 * Math.PI/28.0).radians)
 
     constructor() {
         shooterMotor.direction = NextMotor.Direction.FORWARD
 
         // PID and FeedForward Coefficients
         shooterMotor.velocityConstants.apply {
-            kP = 1.0
+            kP = 0.0005
             kI = 0.0
             kD = 0.0
-            kS = 0.0
-            kV = 0.0
+            kS = 0.19
+            kV = 1.0/5700.0
             kA = 0.0
         }
+
+
     }
 
     companion object {
