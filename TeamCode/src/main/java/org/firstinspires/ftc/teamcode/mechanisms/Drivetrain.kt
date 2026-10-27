@@ -22,9 +22,9 @@ class Drivetrain : Mechanism {
     val backLeft = NextMotor("backLeft")
     val backRight = NextMotor("backRight")
 
-    val pinpoint = NextPinpoint("pinpoint")
+    var pinpoint: NextPinpoint
 
-    constructor() {
+    constructor(pinpoint: NextPinpoint) {
         frontRight.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
         backRight.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
         frontLeft.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
@@ -32,6 +32,8 @@ class Drivetrain : Mechanism {
 
         backLeft.direction = NextMotor.Direction.REVERSE
         frontLeft.direction = NextMotor.Direction.REVERSE
+
+        this.pinpoint = pinpoint
     }
 
     override fun periodic() {

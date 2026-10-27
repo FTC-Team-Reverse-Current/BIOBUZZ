@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode
 import com.acmerobotics.dashboard.FtcDashboard
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.groups.Groups.parallel
+import dev.nextftc.hardware.sensors.NextPinpoint
 import dev.nextftc.robot.Mechanism
 import dev.nextftc.robot.NextRobot
 import dev.nextftc.robot.coroutine.command
@@ -24,6 +25,8 @@ const val DEFAULT_SHOOT_RPM = 4500.0
 
 class BiobuzzBot : NextRobot {
 
+    val pinpoint = NextPinpoint("pinpoint")
+
     @Suppress("EmptySecondaryConstructor") // Get Detekt off our assess
     constructor() {
 
@@ -33,11 +36,11 @@ class BiobuzzBot : NextRobot {
         super.periodic()
     }
 
-    val drivetrain = Drivetrain()
+    val drivetrain = Drivetrain(pinpoint)
     val intake = Intake()
 
     val shooter = Shooter()
-    val turret = Turret()
+    val turret = Turret(pinpoint)
 
     val kicker = Kicker()
 
