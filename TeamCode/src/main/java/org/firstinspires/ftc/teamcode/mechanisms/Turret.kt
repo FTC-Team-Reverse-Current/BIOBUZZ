@@ -30,10 +30,10 @@ val TURRET_ROTATION_RANGE = 0.2..0.8
 enum class HivePositions(
     var pos: Pose2d
 ) {
-    RED_LEFT_POS(Pose2d(0.0.meters, 0.0.meters, 0.0.degrees)),
-    RED_RIGHT_POS(Pose2d(1.0.meters, 0.0.meters, 0.0.degrees)),
-    BLUE_LEFT_POS(Pose2d(0.0.meters, 1.0.meters, 0.0.degrees)),
-    BLUE_RIGHT_POS(Pose2d(1.0.meters, 1.0.meters, 0.0.degrees))
+    RED_LEFT_POS(Pose2d(58.0.inches, 85.0.inches, 0.0.degrees)),
+    RED_RIGHT_POS(Pose2d(84.0.inches, 85.0.inches, 0.0.degrees)),
+    BLUE_LEFT_POS(Pose2d(58.0.inches, 58.0.inches, 0.0.degrees)),
+    BLUE_RIGHT_POS(Pose2d(84.0.inches, 58.0.inches, 0.0.degrees))
 }
 
 enum class SizeState(
@@ -58,7 +58,7 @@ class Turret : Mechanism {
 
     override val defaultCommand: Command = infinite {
         val pose = pinpoint.pose
-        var closest = Pair(Pose2d(0.0.meters, 0.0.meters, 0.0.degrees), Double.POSITIVE_INFINITY)
+        var closest = Pair(Pose2d(0.0.inches, 0.0.inches, 0.0.degrees), Double.POSITIVE_INFINITY)
         for (hive in HivePositions.entries) {
             val dist = pose.distanceTo(hive.pos)
             if (dist < closest.second) {
