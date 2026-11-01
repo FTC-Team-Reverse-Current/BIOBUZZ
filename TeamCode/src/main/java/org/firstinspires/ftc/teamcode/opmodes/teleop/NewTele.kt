@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop
 
+import com.pedropathing.follower.ManualDrive
 import com.pedropathing.ivy.commands.Commands.infinite
 import com.pedropathing.ivy.commands.Commands.instant
 import com.pedropathing.ivy.groups.Groups.parallel
@@ -56,11 +57,18 @@ class NewTele(
                     .into(RotationsPerMinute) - robot.turret.sizeState.rpm * 500,
             ),
         )
+
+        robot.pedro.follower.manual(
+            ManualDrive.fieldCentric(
+            -gamepad1.left_stick_y.toDouble(),
+            -gamepad1.left_stick_x.toDouble(),
+            gamepad1.right_stick_x.toDouble(),
+            robot.pedro.follower.pose().heading()
+        ))
     }
 
     override fun start() {
-        robot.drivetrain.startDrivetrain(gamepad1)
-
+//        robot.drivetrain.startDrivetrain(gamepad1)
         val driver = CommandGamepad(gamepad1)
         val aux = CommandGamepad(gamepad2)
 

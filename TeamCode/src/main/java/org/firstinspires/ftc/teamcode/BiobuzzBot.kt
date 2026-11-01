@@ -5,11 +5,13 @@ import com.pedropathing.ivy.commands.Commands.waitUntil
 import com.pedropathing.ivy.groups.Groups.parallel
 import com.qualcomm.robotcore.hardware.Gamepad
 import dev.nextftc.robot.Mechanism
+import dev.nextftc.v2.pedro.PedroMechanism
 import dev.nextftc.robot.NextRobot
 import dev.nextftc.robot.coroutine.command
 import dev.nextftc.units.RotationsPerMinute
 import dev.nextftc.units.measuretypes.AngularVelocity
 import dev.nextftc.units.volts
+import dev.nextftc.v2.pedro.constants.NextMecanum
 import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain
 import org.firstinspires.ftc.teamcode.mechanisms.Flipper
 import org.firstinspires.ftc.teamcode.mechanisms.Intake
@@ -17,6 +19,9 @@ import org.firstinspires.ftc.teamcode.mechanisms.Kicker
 import org.firstinspires.ftc.teamcode.mechanisms.Shooter
 import org.firstinspires.ftc.teamcode.mechanisms.SizeState
 import org.firstinspires.ftc.teamcode.mechanisms.Turret
+import org.firstinspires.ftc.teamcode.pedro.Constants
+import dev.nextftc.hardware.RobotController.hardwareMap
+
 import kotlin.math.abs
 
 const val INTAKE_VOLTAGE = -6.0
@@ -39,8 +44,10 @@ class BiobuzzBot : NextRobot {
     val kicker = Kicker()
 
     val flipper = Flipper()
+    val pedro = PedroMechanism(Constants::create)
+//    val d = NextMecanum(hardwareMap,Constants.drivetrainConfig)
 
-    override val mechanisms: Set<Mechanism> = setOf(drivetrain, intake, shooter, turret, kicker, flipper)
+    override val mechanisms: Set<Mechanism> = setOf(drivetrain, intake, shooter, turret, kicker, flipper, pedro)
 
     fun fullDump() =
         parallel(
