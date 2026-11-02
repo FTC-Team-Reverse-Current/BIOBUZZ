@@ -39,12 +39,13 @@ class BiobuzzBot : NextRobot {
     val intake = Intake()
 
     val shooter = Shooter()
-    val turret = Turret()
 
     val kicker = Kicker()
 
     val flipper = Flipper()
     val pedro = PedroMechanism(Constants::create)
+
+    val turret = Turret { pedro.follower.pose() }
 //    val d = NextMecanum(hardwareMap,Constants.drivetrainConfig)
 
     override val mechanisms: Set<Mechanism> = setOf(drivetrain, intake, shooter, turret, kicker, flipper, pedro)
