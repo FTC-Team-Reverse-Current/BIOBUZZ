@@ -1,15 +1,42 @@
 package org.firstinspires.ftc.teamcode.mechanisms
 
+import com.pedropathing.follower.Follower
 import com.pedropathing.ivy.Command
+import com.pedropathing.math.Pose
+import com.pedropathing.math.Vector2D
+import dev.nextftc.control.geometry.Pose2d
+import dev.nextftc.control.geometry.Vector2d
 import dev.nextftc.hardware.actuators.NextServo
+import dev.nextftc.hardware.sensors.NextPinpoint
 import dev.nextftc.robot.Mechanism
 import dev.nextftc.robot.Telemetry
+import dev.nextftc.units.Unit
+import dev.nextftc.units.degrees
+import dev.nextftc.units.inches
+import dev.nextftc.units.meters
+import dev.nextftc.units.unittypes.DistanceUnit
+import kotlin.math.PI
+import kotlin.math.atan
+import kotlin.math.atan2
+import kotlin.math.sqrt
 
 const val POLLEN_SERVO_POS = 0.0
 const val NECTAR_SERVO_POS = 0.667
 const val CACHE_TOLERANCE = 0.0005
 const val TURN_INPUT_COEF = 0.01
 val TURRET_ROTATION_RANGE = 0.2..0.8
+
+
+// TODO: Change these values
+
+enum class HivePositions(
+    var pos: Pose
+) {
+    RED_LEFT_POS(Pose(58.0, 85.0)),
+    RED_RIGHT_POS(Pose(84.0, 85.0)),
+    BLUE_LEFT_POS(Pose(58.0, 58.0)),
+    BLUE_RIGHT_POS(Pose(84.0, 58.0)),
+}
 
 enum class SizeState(
     var rpm: Double,
@@ -23,7 +50,39 @@ class Turret : Mechanism {
     val turretServo = NextServo("TurretServo", cacheTolerance = CACHE_TOLERANCE)
     val sizeServo = NextServo("BackServo")
 
+    var follower: () -> Pose
+
+    constructor(poseFunc: () -> Pose) {
+        this.follower = poseFunc
+    }
+
     var sizeState: SizeState = SizeState.POLLEN
+
+    override val defaultCommand: Command = infinite {
+        val pose = follower()
+        var closest = Pair(Pose(0.0, 0.0), Double.POSITIVE_INFINITY)
+        for (hive in HivePositions.entries) {
+            val dist = pose.distance(hive.pos)
+            if (dist < closest.second) {
+                closest = Pair(hive.pos, dist)
+            }
+        }
+
+        val dx = closest.first.x() - pose.x()
+        val dy = closest.first.y() - pose.y()
+
+        val targetAngle = atan2(dy, dx) * (180 / PI)
+        Telemetry.log("Target Angle: ", targetAngle)
+        val robotAngle = pose.heading() * (180 / PI)
+
+        val relativeAngle = targetAngle - robotAngle
+        Telemetry.log("Desired Angle: ", relativeAngle)
+
+        val normalizedAngle = ((relativeAngle % 360.0) + 360.0) % 360.0
+
+        // TODO: Change based on totol range (Here it is 0.0 to 1.0)
+        turretServo.position = normalizedAngle / 360
+    }
 
     fun setSizeState(state: SizeState) =
         instant {

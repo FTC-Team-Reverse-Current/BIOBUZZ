@@ -43,6 +43,18 @@ class NewTele(
             robot.turret.sizeState.rpm
                 .toString(),
         )
+        Telemetry.log(
+            "Robot Pos X:",
+            robot.pedro.follower.pose().x()
+        )
+        Telemetry.log(
+            "Robot Pos Y:",
+            robot.pedro.follower.pose().y()
+        )
+        Telemetry.log(
+            "Robot Pos Heading:",
+            robot.pedro.follower.pose().heading()
+        )
 
         @Suppress("MaxLineLength", "MagicNumber")
         Telemetry.log(
