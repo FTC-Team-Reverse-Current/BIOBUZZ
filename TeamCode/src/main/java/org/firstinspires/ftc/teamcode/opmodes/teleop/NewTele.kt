@@ -58,6 +58,15 @@ class NewTele(
             ),
         )
 
+        Telemetry.log(
+            "Current Flipper Position(R)",
+            robot.flipper.flipperServoRight.position.toString()
+            )
+        Telemetry.log(
+            "Current Flipper Position(L)",
+            robot.flipper.flipperServoLeft.position.toString()
+        )
+
         robot.pedro.follower.manual(
             ManualDrive.fieldCentric(
             -gamepad1.left_stick_y.toDouble(),
@@ -75,7 +84,8 @@ class NewTele(
         robot.turret.setSizeState(SizeState.POLLEN)
 
         driver.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.intake.setVoltage(INTAKE_VOLTAGE))
-        driver.leftTrigger.isOver(MIN_TRIGGER).whileTrue(robot.flipper.flip())
+        driver.y.whileTrue(robot.flipper.flip())
+
 
 //        aux.rightTrigger.isOver(0.1).whileTrue(runShooterCycleNectar()).whileFalse(stopShooterCycle())
         aux.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.shootWhenReady { robot.turret.sizeState })

@@ -88,4 +88,9 @@ class BiobuzzBot : NextRobot {
         command {
             await(drivetrain.moveForward(AUTO_THROTTLE).raceWith(waitMs(seconds * SECONDS_TO_MS)))
         }
+
+    fun flipFlipper() =
+        parallel(
+            flipper.flip()
+        )
 }

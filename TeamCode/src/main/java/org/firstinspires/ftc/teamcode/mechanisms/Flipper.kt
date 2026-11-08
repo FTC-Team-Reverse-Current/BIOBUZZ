@@ -2,22 +2,27 @@ package org.firstinspires.ftc.teamcode.mechanisms
 
 import dev.nextftc.hardware.actuators.NextServo
 import dev.nextftc.robot.Mechanism
-import kotlin.math.floor
 
-val FLIPPER_MIN_RANGE = 0.0..0.05
+val FLIPPER_LEFT_MIN_RANGE = 0.20..0.30
+val FLIPPER_RIGHT_MIN_RANGE = 0.0..0.05
 
-const val FLIPPER_MIN_POS = 0.0
-const val FLIPPER_MAX_POS = 0.7
+const val FLIPPER_LEFT_MIN_POS = 0.25
+const val FLIPPER_RIGHT_MIN_POS = 0.0
+const val FLIPPER_LEFT_MAX_POS = 0.0
+const val FLIPPER_RIGHT_MAX_POS = 0.25
 
 class Flipper : Mechanism {
-    val flipperServo = NextServo("FlipperServo")
+    val flipperServoLeft = NextServo("flowerLeft")
+    val flipperServoRight = NextServo("flowerRight")
 
     fun flip() =
         instant {
-            if (flipperServo.position in FLIPPER_MIN_RANGE) {
-                flipperServo.position = FLIPPER_MAX_POS
+            if (flipperServoLeft.position in FLIPPER_LEFT_MIN_RANGE && flipperServoRight.position in FLIPPER_RIGHT_MIN_RANGE) {
+                flipperServoLeft.position = FLIPPER_LEFT_MAX_POS
+                flipperServoRight.position = FLIPPER_RIGHT_MAX_POS
             } else {
-                flipperServo.position = FLIPPER_MIN_POS
+                flipperServoLeft.position = FLIPPER_LEFT_MIN_POS
+                flipperServoRight.position = FLIPPER_RIGHT_MIN_POS
             }
         }
 }
