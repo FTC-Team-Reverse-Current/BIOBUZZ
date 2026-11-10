@@ -38,14 +38,6 @@ dependencies {
     implementation 'dev.nextftc.v2:robot:0.3.0'
     implementation 'dev.nextftc.v2:pedro:0.3.1-Pedro-SNAPSHOT'
 
-    //Sloth
     implementation("dev.frozenmilk.sinister:Sloth:0.3.2")
-
-    //Panels
-//    implementation("com.bylazar.sloth:fullpanels:0.3.0+1.0.12")
-//    implementation("com.acmerobotics.slothboard:dashboard:0.3.0+0.6.0")
-//
-//    implementation('com.acmerobotics.dashboard:dashboard:0.6.0') {
-//        exclude group: 'org.firstinspires.ftc'
-//    }
+    implementation("com.bylazar.sloth:fullpanels:0.3.2+1.0.13")
 }
