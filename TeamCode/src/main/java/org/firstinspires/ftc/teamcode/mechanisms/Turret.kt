@@ -81,7 +81,7 @@ class Turret : Mechanism {
         val normalizedAngle = ((relativeAngle % 360.0) + 360.0) % 360.0
 
         // TODO: Change based on totol range (Here it is 0.0 to 1.0)
-        turretServo.position = normalizedAngle / 360
+        turretServo.position = (normalizedAngle / 360).coerceIn(0.1, 0.9)
     }
 
     fun setSizeState(state: SizeState) =
@@ -93,7 +93,7 @@ class Turret : Mechanism {
     fun turnTurret(turnSpeed: () -> Double) =
         infinite {
             turretServo.position =
-                (turretServo.position + (turnSpeed() * TURN_INPUT_COEF)).coerceIn(TURRET_ROTATION_RANGE)
+                (turretServo.position + (turnSpeed() * TURN_INPUT_COEF)).coerceIn(0.1, 0.9)
         }
 
     fun turretGoto(position: Double) =
