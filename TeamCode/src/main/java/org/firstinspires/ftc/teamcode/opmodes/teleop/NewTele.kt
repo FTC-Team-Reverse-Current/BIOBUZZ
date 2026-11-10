@@ -55,6 +55,10 @@ class NewTele(
             "Robot Pos Heading:",
             robot.pedro.follower.pose().heading()
         )
+        Telemetry.log(
+            "Servo Pos:",
+            robot.turret.turretServo.position
+        )
 
         @Suppress("MaxLineLength", "MagicNumber")
         Telemetry.log(
