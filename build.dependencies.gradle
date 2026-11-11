@@ -6,6 +6,7 @@ repositories {
     maven { url = "https://central.sonatype.com/repository/maven-snapshots/"}
     maven { url = "https://repo.dairy.foundation/releases"}
     maven { url = "https://repo.dairy.foundation/snapshots" }
+    maven { url = 'https://jitpack.io' }
 
 
 
@@ -42,5 +43,8 @@ dependencies {
     implementation('com.acmerobotics.dashboard:dashboard:0.6.0') {
         exclude group: 'org.firstinspires.ftc'
     }
+
+    implementation 'dev.ftcautotune.FtcAutoTune:pidautotuner-core:v1.4.3'
+    implementation 'dev.ftcautotune.FtcAutoTune:pidautotuner-ftc:v1.4.3'
 
 }
