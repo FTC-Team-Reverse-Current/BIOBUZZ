@@ -94,7 +94,7 @@ class NewTele(
         driver.leftTrigger.isOver(MIN_TRIGGER).whileTrue(robot.flipper.flip())
 
 //        aux.rightTrigger.isOver(0.1).whileTrue(runShooterCycleNectar()).whileFalse(stopShooterCycle())
-        aux.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.shootWhenReady { robot.turret.sizeState })
+        aux.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.shooter.pidShoot(6000.0))
         aux.leftTrigger.isOver(MIN_TRIGGER).whileTrue(robot.fullDump())
 
         aux.leftStickX.isBetween(ANALOG_POS_RANGE).whileTrue(
