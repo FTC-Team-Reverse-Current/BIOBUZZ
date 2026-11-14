@@ -64,6 +64,8 @@ class NewTele(
         val currentPose = robot.pedro.follower.pose()
         packet.put("Pose x", (currentPose.x() - 72))
         packet.put("Pose y", (72 - currentPose.y()))
+        packet.put("Left Servo Pose", robot.flower.leftServo.position)
+        packet.put("Right Servo Pose", robot.flower.rightServo.position)
 
         packet.put("Pose heading", (currentPose.heading() + ((Math.PI) / 2)))
         packet.fieldOverlay().setFill("blue").fillRect(-20.0, -20.0, 40.0, 40.0);
@@ -84,13 +86,14 @@ class NewTele(
 //            ),
 //        )
 
-        robot.pedro.follower.manual(
-            ManualDrive.fieldCentric(
+        val powers = ManualDrive.fieldCentric(
             -gamepad1.left_stick_y.toDouble(),
             -gamepad1.left_stick_x.toDouble(),
             gamepad1.right_stick_x.toDouble(),
             robot.pedro.follower.pose().heading()
-        ))
+        )
+        ManualDrive.driveOrHold(robot.pedro.follower, powers);
+        robot.pedro.follower.update()
     }
 
     public override fun onControlHubBulkData() {
@@ -107,12 +110,15 @@ class NewTele(
         robot.turret.setSizeState(SizeState.POLLEN)
 
         driver.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.intake.setVoltage(INTAKE_VOLTAGE))
-        driver.leftTrigger.isOver(MIN_TRIGGER).whileTrue(robot.flipper.flip())
 
-        aux.x.whileTrue(robot.shoot()).onFalse(waitMs(800.0).then(robot.transfer.next90increment()))
+        driver.a.onTrue(robot.flower.flip())
+
+        driver.y.onTrue(robot.resetPos())
+
+        aux.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.shoot()).onFalse(waitMs(800.0).then(robot.transfer.next90increment()))
         aux.b.onTrue(robot.transfer.turnTransfer())
         aux.y.onTrue(robot.transfer.dumpSingle())
-        aux.a.onTrue(robot.turret.turretGoto(DEFAULT_TURRET_POS))
+        aux.a.whileTrue(robot.turret.autoAim())
 
         aux.leftStickX.isBetween(ANALOG_POS_RANGE).whileTrue(
             robot.turret.turnTurret {
@@ -127,6 +133,16 @@ class NewTele(
 
         aux.dpadUp.onTrue(robot.shooter.increaseRPM())
         aux.dpadDown.onTrue(robot.shooter.decreaseRPM())
+        aux.rightStickX.isBetween(ANALOG_POS_RANGE).whileTrue(
+            robot.flower.turnFlower (
+                (-gamepad2.left_stick_x.toDouble() + 1) / 2
+            ),
+        )
+        aux.rightStickX.isBetween(ANALOG_NEG_RANGE).whileTrue(
+            robot.flower.turnFlower (
+                (gamepad2.left_stick_x.toDouble() + 1) / 2
+            ),
+        )
 
         // TODO Auto
     }

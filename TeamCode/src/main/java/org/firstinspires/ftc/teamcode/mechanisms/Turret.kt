@@ -25,7 +25,7 @@ import kotlin.math.sqrt
 const val POLLEN_SERVO_POS = 0.0
 const val NECTAR_SERVO_POS = 0.667
 const val CACHE_TOLERANCE = 0.0005
-const val TURN_INPUT_COEF = 0.01
+const val TURN_INPUT_COEF = 0.001
 val TURRET_ROTATION_RANGE = 0.2..0.8
 
 
@@ -60,7 +60,7 @@ class Turret : Mechanism {
 
     var sizeState: SizeState = SizeState.POLLEN
 
-    override val defaultCommand: Command = infinite {
+    fun autoAim() = infinite {
         val pose = follower()
         var closest = Pair(Pose(0.0, 0.0), Double.POSITIVE_INFINITY)
         for (hive in HivePositions.entries) {
