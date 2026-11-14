@@ -13,8 +13,10 @@ import dev.nextftc.robot.Telemetry
 import dev.nextftc.units.Degrees
 import dev.nextftc.units.Rotations
 import dev.nextftc.units.radians
+import dev.nextftc.units.volts
 import kotlin.math.abs
 import kotlin.math.absoluteValue
+import kotlin.math.floor
 
 val yellow = ColorProfile(
     space = ColorSpace.HSV,
@@ -34,13 +36,12 @@ enum class BallState(val color: ColorProfile) {
 }
 
 class Transfer : Mechanism {
-    val angleCount = (3.14159 * 2) / 560
 
     val transferMotor = NextMotor("TransferMotor", Rotations.of(1/530.0), cacheTolerance = 0.01);
 
     val sensor = NextColorDistanceSensor("ColorSensor")
     val positionController = PIDFController(0.01641,0.0,0.00058,0.0)
-    var desiredPosition = 0
+    var desiredPosition = 0.0
 
 
     constructor() {
@@ -54,33 +55,32 @@ class Transfer : Mechanism {
     val balls = mutableListOf(BallState.YELLOW, BallState.YELLOW, BallState.YELLOW, BallState.YELLOW)
 
     override fun periodic() {
-        val packet = TelemetryPacket()
-        sensor.update()
-        if (detecting) {
-            if (sensor.isColor(yellow)) {
-                turnTransfer(BallState.YELLOW).schedule();
-            } else if (sensor.isColor(red)) {
-                turnTransfer(BallState.RED).schedule();
-            }
-        }
-        packet.put("Detecting", detecting)
-        FtcDashboard.getInstance().sendTelemetryPacket(packet)
+//        val packet = TelemetryPacket()
+//        sensor.update()
+//        if (detecting) {
+//            if (sensor.isColor(yellow)) {
+//                turnTransfer(BallState.YELLOW).schedule();
+//            } else if (sensor.isColor(red)) {
+//                turnTransfer(BallState.RED).schedule();
+//            }
+//        }
+//        packet.put("Detecting", detecting)
+//        FtcDashboard.getInstance().sendTelemetryPacket(packet)
     }
 
-    fun turnTransfer(state: BallState) = coroutine {
-        wait(0.3)
-        balls.add(state);
+    fun turnTransfer() = coroutine {
+//        balls.add(state);
         detecting = false
-        if (balls.size <= 3) {
-            desiredPosition += (530/4)
-        }
+//        if (balls.size <= 3) {
+//            desiredPosition += (530/4)
+//        }
+        desiredPosition += (530/4)
 
 
-//        while ((transferMotor.encoderPosition.into(Degrees) - (balls.size * 90.0) - 10).absoluteValue <= 1) {
         while (abs((transferMotor.encoderPosition.magnitude * 530) - desiredPosition) >= 2) {
             val packet = TelemetryPacket()
             val output: Double = positionController.calculate(
-                desiredPosition.toDouble(), transferMotor.encoderPosition.into(Rotations) * 530
+                desiredPosition, transferMotor.encoderPosition.into(Rotations) * 530
             );
 
             transferMotor.throttle = -output
@@ -95,6 +95,24 @@ class Transfer : Mechanism {
         }
         transferMotor.throttle = 0.0;
 
-        detecting = balls.size != 4
+//        detecting = balls.size != 4
+
+
+    }
+
+    fun transferShoot() = infinite {
+        transferMotor.voltage = 9.0.volts;
+    }.setEnd {
+        transferMotor.throttle = 0.0;
+    }
+
+    fun dumpSingle() = coroutine {
+        desiredPosition -= (530/2)
+        await(turnTransfer())
+    }
+
+    fun next90increment() = coroutine {
+        desiredPosition = floor(((transferMotor.encoderPosition.into(Rotations) * 530) / (530/4)) )* (530/4)
+        await(turnTransfer())
     }
 }

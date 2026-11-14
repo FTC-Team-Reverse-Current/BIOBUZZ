@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode
 
+import com.pedropathing.ivy.behaviors.InterruptedBehavior
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.groups.Groups.parallel
 import dev.nextftc.robot.Mechanism
 import dev.nextftc.v2.pedro.PedroMechanism
 import dev.nextftc.robot.NextRobot
 import dev.nextftc.robot.coroutine.command
+import dev.nextftc.units.RotationsPerMinute
 import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain
 import org.firstinspires.ftc.teamcode.mechanisms.Flipper
 import org.firstinspires.ftc.teamcode.mechanisms.Intake
@@ -14,6 +16,7 @@ import org.firstinspires.ftc.teamcode.mechanisms.SizeState
 import org.firstinspires.ftc.teamcode.mechanisms.Transfer
 import org.firstinspires.ftc.teamcode.mechanisms.Turret
 import org.firstinspires.ftc.teamcode.pedro.Constants
+import kotlin.math.abs
 
 const val INTAKE_VOLTAGE = -6.0
 const val AUTO_THROTTLE = 0.3
@@ -62,4 +65,10 @@ class BiobuzzBot : NextRobot {
         command {
             await(drivetrain.moveForward(AUTO_THROTTLE).raceWith(waitMs(seconds * SECONDS_TO_MS)))
         }
+
+    fun shoot() = command {
+        fork(shooter.pidShoot())
+        waitUntil { abs(shooter.shooterMotor.encoderVelocity.into(RotationsPerMinute) - shooter.getRPM() ) <= 50 }
+        await(transfer.transferShoot())
+    }.setInterruptedBehavior(InterruptedBehavior.END)
 }

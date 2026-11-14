@@ -7,22 +7,24 @@ import dev.nextftc.robot.coroutine.command
 import dev.nextftc.units.RotationsPerMinute
 import dev.nextftc.units.measuretypes.AngularVelocity
 import dev.nextftc.units.volts
+import com.aaravdhawan25.pidautotuner.PIDFController;
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import dev.nextftc.control.feedback.PIDController
+import dev.nextftc.units.Rotations
+import dev.nextftc.units.rotationsPerMinute
+import kotlin.math.abs
 
 class Shooter : Mechanism {
-    val shooterMotor = NextMotor("ShooterMotor")
+    val shooterMotor = NextMotor("ShooterMotor", Rotations.of(1/28.0))
+    val shooterController = PIDFController(0.02876, 0.0, 0.00077, 0.000642)
+    var rpm = 2500;
+    val getRPM = { rpm }
 
     constructor() {
         shooterMotor.direction = NextMotor.Direction.FORWARD
 
-        // PID and FeedForward Coefficients
-        shooterMotor.velocityConstants.apply {
-            kP = 1.0
-            kI = 0.0
-            kD = 0.0
-            kS = 0.0
-            kV = 0.0
-            kA = 0.0
-        }
+        shooterController.setOutputBounds(0.0, 1.0)
     }
 
     companion object {
@@ -30,26 +32,21 @@ class Shooter : Mechanism {
         var pollenShootRPM = 12.0
     }
 
-    fun automatedShoot(sizeState: SizeState) =
-        infinite {
-            setVoltage(sizeState.rpm)
-        }.setEnd { shooterMotor.voltage = 0.0.volts }
+    override fun periodic() {
+        val packet = TelemetryPacket()
+        packet.put("RPM", rpm)
+        packet.put("ShooterRPM", shooterMotor.encoderVelocity.into(RotationsPerMinute))
+        packet.put("ShooterThrottle", shooterMotor.throttle)
 
-    fun setVelocity(velocity: Double) =
-        infinite {
-            val angular = AngularVelocity(velocity, RotationsPerMinute)
-            shooterMotor.setVelocitySetpoint(angular)
-        }.setEnd { shooterMotor.voltage = 0.0.volts }
+        FtcDashboard.getInstance().sendTelemetryPacket(packet)
+    }
 
-    fun changeRPM(amount: Double) =
-        instant {
-            nectarShootRPM += amount
-            pollenShootRPM += amount
-        }
+    fun pidShoot() = infinite {
+        val velocity = abs(shooterMotor.encoderVelocity.into(RotationsPerMinute))
 
-//    fun setVoltage(voltage: Double) = infinite {
-//        shooterMotor.voltage = voltage.volts
-//    }.setEnd { shooterMotor.voltage = 0.0.volts }
+        val power = shooterController.calculate(velocity, getRPM().toDouble())
+        shooterMotor.throttle = power
+    }.setEnd { shooterMotor.throttle = 0.0 }
 
     fun setVoltage(voltage: Double) {
         shooterMotor.voltage = voltage.volts
@@ -59,4 +56,12 @@ class Shooter : Mechanism {
         infinite {
             shooterMotor.throttle = throttle
         }
+
+    fun increaseRPM() = instant{
+        rpm += 50
+    }
+
+    fun decreaseRPM() = instant{
+        rpm -= 50
+    }
 }
