@@ -18,7 +18,7 @@ import kotlin.math.abs
 class Shooter : Mechanism {
     val shooterMotor = NextMotor("ShooterMotor", Rotations.of(1/28.0))
     val shooterController = PIDFController(0.02876, 0.0, 0.00077, 0.000642)
-    var rpm = 3000;
+    var rpm = 5000;
     val getRPM = { rpm }
 
     constructor() {

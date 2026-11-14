@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode
 import com.pedropathing.ivy.behaviors.InterruptedBehavior
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.groups.Groups.parallel
+import com.pedropathing.math.Pose
 import dev.nextftc.robot.Mechanism
 import dev.nextftc.v2.pedro.PedroMechanism
 import dev.nextftc.robot.NextRobot
@@ -24,6 +25,8 @@ const val STRAFE_THROTTLE = 0.5
 const val AUTO_STRAFE_MS = 350.0
 const val SECONDS_TO_MS = 1000.0
 const val DEFAULT_SHOOT_RPM = 4500.0
+
+val DEFAULT_POS = Pose(0.0, 0.0, Math.toRadians(0.0))
 
 class BiobuzzBot : NextRobot {
     @Suppress("EmptySecondaryConstructor") // Get Detekt off our assess
@@ -71,4 +74,8 @@ class BiobuzzBot : NextRobot {
         waitUntil { abs(shooter.shooterMotor.encoderVelocity.into(RotationsPerMinute) - shooter.getRPM() ) <= 50 }
         await(transfer.transferShoot())
     }.setInterruptedBehavior(InterruptedBehavior.END)
+
+    fun resetPos() = command {
+        pedro.follower.setPose(DEFAULT_POS)
+    }
 }

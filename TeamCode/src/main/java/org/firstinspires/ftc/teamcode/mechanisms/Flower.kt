@@ -19,11 +19,9 @@ class Flower : Mechanism {
         rightServo.position = RIGHT_POS[set]
     }
 
-    fun turnFlower(turnSpeed: () -> Double) =
-        infinite {
-            leftServo.position =
-                (leftServo.position + (turnSpeed() * TURN_INPUT_COEF))
-            rightServo.position =
-                (rightServo.position - (turnSpeed() * TURN_INPUT_COEF))
+    fun turnFlower(position: Double) =
+        instant {
+            leftServo.position = position
+            rightServo.position = position
         }
 }

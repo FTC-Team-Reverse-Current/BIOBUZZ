@@ -82,13 +82,14 @@ class NewTele(
 //            ),
 //        )
 
-        robot.pedro.follower.manual(
-            ManualDrive.fieldCentric(
+        val powers = ManualDrive.fieldCentric(
             -gamepad1.left_stick_y.toDouble(),
             -gamepad1.left_stick_x.toDouble(),
             gamepad1.right_stick_x.toDouble(),
             robot.pedro.follower.pose().heading()
-        ))
+        )
+        ManualDrive.driveOrHold(robot.pedro.follower, powers);
+        robot.pedro.follower.update()
     }
 
     override fun start() {
@@ -101,6 +102,8 @@ class NewTele(
         driver.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.intake.setVoltage(INTAKE_VOLTAGE))
 
         driver.a.onTrue(robot.flower.flip())
+
+        driver.y.onTrue(robot.resetPos())
 
         aux.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.shoot()).onFalse(waitMs(800.0).then(robot.transfer.next90increment()))
         aux.b.onTrue(robot.transfer.turnTransfer())
@@ -116,6 +119,17 @@ class NewTele(
             robot.turret.turnTurret {
                 -gamepad2.left_stick_x.toDouble()
             },
+        )
+
+        aux.rightStickX.isBetween(ANALOG_POS_RANGE).whileTrue(
+            robot.flower.turnFlower (
+                (-gamepad2.left_stick_x.toDouble() + 1) / 2
+            ),
+        )
+        aux.rightStickX.isBetween(ANALOG_NEG_RANGE).whileTrue(
+            robot.flower.turnFlower (
+                (gamepad2.left_stick_x.toDouble() + 1) / 2
+            ),
         )
 
         // TODO Auto
