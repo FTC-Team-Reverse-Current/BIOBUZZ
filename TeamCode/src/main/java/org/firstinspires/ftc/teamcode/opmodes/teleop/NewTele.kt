@@ -60,6 +60,8 @@ class NewTele(
         val currentPose = robot.pedro.follower.pose()
         packet.put("Pose x", (currentPose.x() - 72))
         packet.put("Pose y", (72 - currentPose.y()))
+        packet.put("Left Servo Pose", robot.flower.leftServo.position)
+        packet.put("Right Servo Pose", robot.flower.rightServo.position)
 
         packet.put("Pose heading", (currentPose.heading() + ((Math.PI) / 2)))
         packet.fieldOverlay().setFill("blue").fillRect(-20.0, -20.0, 40.0, 40.0);
@@ -97,12 +99,13 @@ class NewTele(
         robot.turret.setSizeState(SizeState.POLLEN)
 
         driver.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.intake.setVoltage(INTAKE_VOLTAGE))
-        driver.leftTrigger.isOver(MIN_TRIGGER).whileTrue(robot.flipper.flip())
 
-        aux.x.whileTrue(robot.shoot()).onFalse(waitMs(800.0).then(robot.transfer.next90increment()))
+        driver.a.onTrue(robot.flower.flip())
+
+        aux.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.shoot()).onFalse(waitMs(800.0).then(robot.transfer.next90increment()))
         aux.b.onTrue(robot.transfer.turnTransfer())
         aux.y.onTrue(robot.transfer.dumpSingle())
-        aux.a.onTrue(robot.turret.turretGoto(DEFAULT_TURRET_POS))
+        aux.a.whileTrue(robot.turret.autoAim())
 
         aux.leftStickX.isBetween(ANALOG_POS_RANGE).whileTrue(
             robot.turret.turnTurret {

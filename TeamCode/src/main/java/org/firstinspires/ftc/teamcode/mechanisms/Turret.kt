@@ -60,7 +60,7 @@ class Turret : Mechanism {
 
     var sizeState: SizeState = SizeState.POLLEN
 
-    override val defaultCommand: Command = infinite {
+    fun autoAim() = infinite {
         val pose = follower()
         var closest = Pair(Pose(0.0, 0.0), Double.POSITIVE_INFINITY)
         for (hive in HivePositions.entries) {
