@@ -42,6 +42,7 @@ class Transfer : Mechanism {
     val sensor = NextColorDistanceSensor("ColorSensor")
     val positionController = PIDFController(0.01641,0.0,0.00058,0.0)
     var desiredPosition = 0.0
+    val quarterTurn = 530.0 / 4.0
 
 
     constructor() {
@@ -66,30 +67,49 @@ class Transfer : Mechanism {
 //        }
 //        packet.put("Detecting", detecting)
 //        FtcDashboard.getInstance().sendTelemetryPacket(packet)
+
+    }
+
+    var pidEnabled = false
+
+    val currentPositionTicks: Double
+        get() = transferMotor.encoderPosition.into(Rotations) * 530.0
+
+    val atTarget: Boolean
+        get() = abs(currentPositionTicks - desiredPosition) < 2.0
+
+    fun updatePID() {
+        if (!pidEnabled) return
+
+        if (atTarget) {
+            transferMotor.throttle = 0.0
+            return
+        }
+
+        val packet = TelemetryPacket()
+        val output: Double = positionController.calculate(
+            desiredPosition, transferMotor.encoderPosition.into(Rotations) * 530
+        );
+
+        packet.put("TransferPositionTick", transferMotor.encoderPosition.into(Rotations) * 530)
+        packet.put("TransferThrottle", transferMotor.throttle)
+        packet.put("TransferOutput", output)
+        packet.put("TransferDistanceFromDesired", abs(transferMotor.encoderPosition.magnitude * 530) - desiredPosition)
+        FtcDashboard.getInstance().sendTelemetryPacket(packet)
     }
 
     fun turnTransfer() = coroutine {
         detecting = false
-        desiredPosition += (530/4)
+        desiredPosition += quarterTurn
+        pidEnabled = true
+        positionController.reset()
 
-
-        while (abs((transferMotor.encoderPosition.magnitude * 530) - desiredPosition) >= 2) {
-            val packet = TelemetryPacket()
-            val output: Double = positionController.calculate(
-                desiredPosition, transferMotor.encoderPosition.into(Rotations) * 530
-            );
-
-            transferMotor.throttle = -output
-
-            packet.put("TransferPositionTick", transferMotor.encoderPosition.into(Rotations) * 530)
-            packet.put("TransferThrottle", transferMotor.throttle)
-            packet.put("TransferOutput", output)
-            packet.put("TransferDistanceFromDesired", abs(transferMotor.encoderPosition.magnitude * 530) - desiredPosition)
-            FtcDashboard.getInstance().sendTelemetryPacket(packet)
-
+        while (!atTarget) {
             yield()
         }
-        transferMotor.throttle = 0.0;
+
+        pidEnabled = false
+        transferMotor.throttle = 0.0
     }
 
     fun transferShoot() = infinite {
@@ -99,12 +119,12 @@ class Transfer : Mechanism {
     }
 
     fun dumpSingle() = coroutine {
-        desiredPosition -= (530/2)
+        desiredPosition -= (530/2.0)
         await(turnTransfer())
     }
 
     fun next90increment() = coroutine {
-        desiredPosition = floor(((transferMotor.encoderPosition.into(Rotations) * 530) / (530/4)) )* (530/4)
+        desiredPosition = floor(((transferMotor.encoderPosition.into(Rotations) * 530) / quarterTurn) )* quarterTurn
         await(turnTransfer())
     }
 }

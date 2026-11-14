@@ -7,6 +7,9 @@ repositories {
     maven { url = "https://repo.dairy.foundation/releases"}
     maven { url = "https://repo.dairy.foundation/snapshots" }
     maven { url = 'https://jitpack.io' }
+    maven {
+        url 'https://maven.anygeneric.dev/'
+    }
 
 
 
@@ -46,5 +49,7 @@ dependencies {
 
     implementation 'dev.ftcautotune.FtcAutoTune:pidautotuner-core:v1.4.3'
     implementation 'dev.ftcautotune.FtcAutoTune:pidautotuner-ftc:v1.4.3'
+
+    implementation 'dev.anygeneric:blazeftc:0.1.67'
 
 }

@@ -7,8 +7,11 @@ import com.pedropathing.ivy.commands.Commands.infinite
 import com.pedropathing.ivy.commands.Commands.instant
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.groups.Groups.parallel
+import dev.nextftc.hardware.lynx.NextLynxModule
 import dev.nextftc.robot.Telemetry
 import dev.nextftc.robot.coroutine.command
+import dev.nextftc.robot.opmode.BlazeBulkReadHook
+import dev.nextftc.robot.opmode.BlazeOpMode
 import dev.nextftc.robot.opmode.NextOpMode
 import dev.nextftc.robot.opmode.NextTeleop
 import dev.nextftc.robot.triggers.CommandGamepad
@@ -31,8 +34,9 @@ const val SHOOTER_RPM_INCREMENT = 0.2
 @NextTeleop(name = "New TeleOp For Competition")
 class NewTele(
     val robot: BiobuzzBot,
-) : NextOpMode(robot) {
+) : BlazeOpMode(robot, BlazeBulkReadHook(NextLynxModule.Type.EXPANSION_HUB, false)) {
     override fun periodic() {
+
         Telemetry.log(
             "Current RPM: ",
             robot.shooter.shooterMotor.encoderVelocity
@@ -88,6 +92,12 @@ class NewTele(
             robot.pedro.follower.pose().heading()
         ))
     }
+
+    public override fun onControlHubBulkData() {
+        robot.transfer.updatePID()
+        robot.shooter.updatePID()
+    }
+
 
     override fun start() {
 //        robot.drivetrain.startDrivetrain(gamepad1)

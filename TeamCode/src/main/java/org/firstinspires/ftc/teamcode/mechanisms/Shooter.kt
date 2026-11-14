@@ -20,6 +20,7 @@ class Shooter : Mechanism {
     val shooterController = PIDFController(0.02876, 0.0, 0.00077, 0.000642)
     var rpm = 2500;
     val getRPM = { rpm }
+    var updatePiddle = false
 
     constructor() {
         shooterMotor.direction = NextMotor.Direction.FORWARD
@@ -41,12 +42,23 @@ class Shooter : Mechanism {
         FtcDashboard.getInstance().sendTelemetryPacket(packet)
     }
 
-    fun pidShoot() = infinite {
-        val velocity = abs(shooterMotor.encoderVelocity.into(RotationsPerMinute))
+    fun updatePID() {
+        if (updatePiddle) {
+            val velocity = abs(shooterMotor.encoderVelocity.into(RotationsPerMinute))
 
-        val power = shooterController.calculate(velocity, getRPM().toDouble())
-        shooterMotor.throttle = power
-    }.setEnd { shooterMotor.throttle = 0.0 }
+            val power = shooterController.calculate(velocity, getRPM().toDouble())
+            shooterMotor.throttle = power
+        }
+    }
+
+    fun pidShoot() = infinite {
+        shooterController.reset()
+        updatePiddle = true
+    }.setEnd {
+        updatePiddle = false
+        shooterMotor.throttle = 0.0
+
+    }
 
     fun setVoltage(voltage: Double) {
         shooterMotor.voltage = voltage.volts
