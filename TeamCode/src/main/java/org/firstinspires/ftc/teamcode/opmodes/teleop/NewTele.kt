@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop
 
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.pedropathing.follower.ManualDrive
 import com.pedropathing.ivy.commands.Commands.infinite
 import com.pedropathing.ivy.commands.Commands.instant
@@ -10,6 +12,7 @@ import dev.nextftc.robot.opmode.NextOpMode
 import dev.nextftc.robot.opmode.NextTeleop
 import dev.nextftc.robot.triggers.CommandGamepad
 import dev.nextftc.units.RotationsPerMinute
+import dev.nextftc.units.inches
 import org.firstinspires.ftc.teamcode.BiobuzzBot
 import org.firstinspires.ftc.teamcode.mechanisms.SizeState
 import kotlin.math.abs
@@ -29,9 +32,6 @@ class NewTele(
     val robot: BiobuzzBot,
 ) : NextOpMode(robot) {
     override fun periodic() {
-//        Telemetry.log("Currently Running!")
-//        Telemetry.log("GP2 Left Trigger Value", gamepad2.left_trigger.toDouble())
-//        Telemetry.log("Aux Left Stick X", gamepad2.left_stick_x.toDouble())
         Telemetry.log(
             "Current RPM: ",
             robot.shooter.shooterMotor.encoderVelocity
@@ -39,17 +39,12 @@ class NewTele(
                 .toString(),
         )
         Telemetry.log(
-            "Desired: ",
-            robot.turret.sizeState.rpm
-                .toString(),
-        )
-        Telemetry.log(
             "Robot Pos X:",
-            robot.pedro.follower.pose().x()
+            robot.pedro.follower.pose().y()
         )
         Telemetry.log(
             "Robot Pos Y:",
-            robot.pedro.follower.pose().y()
+            robot.pedro.follower.pose().x()
         )
         Telemetry.log(
             "Robot Pos Heading:",
@@ -60,19 +55,29 @@ class NewTele(
             robot.turret.turretServo.position
         )
 
-        @Suppress("MaxLineLength", "MagicNumber")
-        Telemetry.log(
-            (
-                abs(
-                    robot.shooter.shooterMotor.encoderVelocity
-                        .into(RotationsPerMinute) - robot.turret.sizeState.rpm * 500,
-                ) <= 50
-            ).toString(),
-            abs(
-                robot.shooter.shooterMotor.encoderVelocity
-                    .into(RotationsPerMinute) - robot.turret.sizeState.rpm * 500,
-            ),
-        )
+        val packet = TelemetryPacket()
+        val currentPose = robot.pedro.follower.pose()
+        packet.put("Pose x", (currentPose.x() - 72))
+        packet.put("Pose y", (72 - currentPose.y()))
+
+        packet.put("Pose heading", (currentPose.heading() + ((Math.PI) / 2)))
+        packet.fieldOverlay().setFill("blue").fillRect(-20.0, -20.0, 40.0, 40.0);
+
+        FtcDashboard.getInstance().sendTelemetryPacket(packet)
+
+//        @Suppress("MaxLineLength", "MagicNumber")
+//        Telemetry.log(
+//            (
+//                abs(
+//                    robot.shooter.shooterMotor.encoderVelocity
+//                        .into(RotationsPerMinute) - robot.turret.sizeState.rpm * 500,
+//                ) <= 50
+//            ).toString(),
+//            abs(
+//                robot.shooter.shooterMotor.encoderVelocity
+//                    .into(RotationsPerMinute) - robot.turret.sizeState.rpm * 500,
+//            ),
+//        )
 
         robot.pedro.follower.manual(
             ManualDrive.fieldCentric(
@@ -94,8 +99,8 @@ class NewTele(
         driver.leftTrigger.isOver(MIN_TRIGGER).whileTrue(robot.flipper.flip())
 
 //        aux.rightTrigger.isOver(0.1).whileTrue(runShooterCycleNectar()).whileFalse(stopShooterCycle())
-        aux.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.shootWhenReady { robot.turret.sizeState })
-        aux.leftTrigger.isOver(MIN_TRIGGER).whileTrue(robot.fullDump())
+//        aux.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.shootWhenReady { robot.turret.sizeState })
+//        aux.leftTrigger.isOver(MIN_TRIGGER).whileTrue(robot.fullDump())
 
         aux.leftStickX.isBetween(ANALOG_POS_RANGE).whileTrue(
             robot.turret.turnTurret {

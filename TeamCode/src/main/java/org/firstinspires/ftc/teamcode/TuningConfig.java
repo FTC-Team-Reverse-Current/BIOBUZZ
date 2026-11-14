@@ -48,7 +48,7 @@ public class TuningConfig {
      * to avoid hitting hard stops; 0.5–0.7 is typical for flywheels.
      * Increase if the mechanism fails to oscillate.
      */
-    public static double RELAY_AMPLITUDE = 0.8;
+    public static double RELAY_AMPLITUDE = 0.4;
 
     /** Number of full oscillation cycles to average for Ku and Tu. */
     public static int CYCLES_TO_COLLECT = 6;

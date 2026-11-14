@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.mechanisms
 
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.pedropathing.follower.Follower
 import com.pedropathing.ivy.Command
 import com.pedropathing.math.Pose
@@ -32,10 +34,10 @@ val TURRET_ROTATION_RANGE = 0.2..0.8
 enum class HivePositions(
     var pos: Pose
 ) {
-    RED_LEFT_POS(Pose(58.0, 85.0)),
-    RED_RIGHT_POS(Pose(84.0, 85.0)),
-    BLUE_LEFT_POS(Pose(58.0, 58.0)),
-    BLUE_RIGHT_POS(Pose(84.0, 58.0)),
+    RED_BOTTOM(Pose(58.0, 58.0)),
+    RED_TOP(Pose(58.0, 83.0)),
+    BLUE_BOTTOM(Pose(83.0, 58.0)),
+    BLUE_TOP(Pose(83.0, 83.0)),
 }
 
 enum class SizeState(
@@ -58,31 +60,41 @@ class Turret : Mechanism {
 
     var sizeState: SizeState = SizeState.POLLEN
 
-    override val defaultCommand: Command = infinite {
-        val pose = follower()
-        var closest = Pair(Pose(0.0, 0.0), Double.POSITIVE_INFINITY)
-        for (hive in HivePositions.entries) {
-            val dist = pose.distance(hive.pos)
-            if (dist < closest.second) {
-                closest = Pair(hive.pos, dist)
-            }
-        }
-
-        val dx = closest.first.x() - pose.x()
-        val dy = closest.first.y() - pose.y()
-
-        val targetAngle = atan2(dy, dx) * (180 / PI)
-        Telemetry.log("Target Angle: ", targetAngle)
-        val robotAngle = pose.heading() * (180 / PI)
-
-        val relativeAngle = targetAngle - robotAngle
-        Telemetry.log("Desired Angle: ", relativeAngle)
-
-        val normalizedAngle = ((relativeAngle % 360.0) + 360.0) % 360.0
-
-        // TODO: Change based on totol range (Here it is 0.0 to 1.0)
-        turretServo.position = (normalizedAngle / 360).coerceIn(0.1, 0.9)
-    }
+//    override val defaultCommand: Command = infinite {
+//        val pose = follower()
+//        var closest = Pair(Pose(0.0, 0.0), Double.POSITIVE_INFINITY)
+//        for (hive in HivePositions.entries) {
+//            val dist = pose.distance(hive.pos)
+//            if (dist < closest.second) {
+//                closest = Pair(hive.pos, dist)
+//            }
+//        }
+//
+//        val dx = closest.first.x() - pose.x()
+//        val dy = closest.first.y() - pose.y()
+//
+//        val targetAngle = atan2(dy, dx) * (180 / PI)
+//        val robotAngle = pose.heading() * (180 / PI)
+//
+//        val relativeAngle = targetAngle - robotAngle
+//
+//        val normalizedAngle = ((relativeAngle % 360.0) + 360.0) % 360.0
+//
+//        // TODO: Change based on totol range (Here it is 0.0 to 1.0)
+//        val desiredAngle = (normalizedAngle / 360)
+//        turretServo.position = (desiredAngle).coerceIn(0.1, 0.9)
+//
+//        val packet = TelemetryPacket()
+//        packet.put("ClosestHive", closest.first)
+//        packet.put("targetAngle", targetAngle)
+//        packet.put("RobotAngle", robotAngle)
+//        packet.put("RelativeAngle", relativeAngle)
+//        packet.put("NormalizedAngle", normalizedAngle)
+//        packet.put("DesiredAngle", desiredAngle)
+//        packet.put("FinalAngle", desiredAngle.coerceIn(0.1, 0.9))
+//
+//        FtcDashboard.getInstance().sendTelemetryPacket(packet)
+//    }
 
     fun setSizeState(state: SizeState) =
         instant {

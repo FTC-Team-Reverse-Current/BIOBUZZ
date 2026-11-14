@@ -7,6 +7,7 @@ import dev.nextftc.robot.opmode.NextOpMode
 import dev.nextftc.robot.opmode.NextTeleop
 import dev.nextftc.robot.triggers.CommandGamepad
 import org.firstinspires.ftc.teamcode.BiobuzzBot
+import org.firstinspires.ftc.teamcode.mechanisms.BallState
 
 @NextTeleop(name = "Test")
 class Test(
@@ -17,6 +18,6 @@ class Test(
     override fun start() {
         val servo = NextServo("testServo")
         gp1.a.onTrue(infinite { servo.position = 0.0 })
-        gp1.b.onTrue(infinite { servo.position = 1.0 })
+        gp1.b.onTrue(robot.transfer.turnTransfer(BallState.YELLOW   ))
     }
 }
