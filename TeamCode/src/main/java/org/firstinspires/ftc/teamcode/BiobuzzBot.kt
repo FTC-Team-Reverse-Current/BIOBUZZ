@@ -9,7 +9,7 @@ import dev.nextftc.robot.NextRobot
 import dev.nextftc.robot.coroutine.command
 import dev.nextftc.units.RotationsPerMinute
 import org.firstinspires.ftc.teamcode.mechanisms.Drivetrain
-import org.firstinspires.ftc.teamcode.mechanisms.Flipper
+import org.firstinspires.ftc.teamcode.mechanisms.Flower
 import org.firstinspires.ftc.teamcode.mechanisms.Intake
 import org.firstinspires.ftc.teamcode.mechanisms.Shooter
 import org.firstinspires.ftc.teamcode.mechanisms.SizeState
@@ -33,14 +33,14 @@ class BiobuzzBot : NextRobot {
     val intake = Intake()
 
     val shooter = Shooter()
-    val flipper = Flipper()
+    val flower = Flower()
     val pedro = PedroMechanism(Constants::create)
     val transfer = Transfer()
 
     val turret = Turret { pedro.follower.pose() }
 //    val d = NextMecanum(hardwareMap,Constants.drivetrainConfig)
 
-    override val mechanisms: Set<Mechanism> = setOf(drivetrain, intake, shooter, turret, flipper, pedro, transfer)
+    override val mechanisms: Set<Mechanism> = setOf(drivetrain, intake, shooter, turret, flower, pedro, transfer)
 
 
 
