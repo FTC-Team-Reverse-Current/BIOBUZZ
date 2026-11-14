@@ -25,7 +25,7 @@ import kotlin.math.sqrt
 const val POLLEN_SERVO_POS = 0.0
 const val NECTAR_SERVO_POS = 0.667
 const val CACHE_TOLERANCE = 0.0005
-const val TURN_INPUT_COEF = 0.01
+const val TURN_INPUT_COEF = 0.001
 val TURRET_ROTATION_RANGE = 0.2..0.8
 
 

@@ -93,7 +93,7 @@ class Transfer : Mechanism {
     }
 
     fun transferShoot() = infinite {
-        transferMotor.voltage = 9.0.volts;
+        transferMotor.voltage = 11.0.volts;
     }.setEnd {
         transferMotor.throttle = 0.0;
     }
