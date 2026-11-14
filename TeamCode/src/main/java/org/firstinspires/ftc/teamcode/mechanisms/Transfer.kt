@@ -69,11 +69,7 @@ class Transfer : Mechanism {
     }
 
     fun turnTransfer() = coroutine {
-//        balls.add(state);
         detecting = false
-//        if (balls.size <= 3) {
-//            desiredPosition += (530/4)
-//        }
         desiredPosition += (530/4)
 
 
@@ -94,10 +90,6 @@ class Transfer : Mechanism {
             yield()
         }
         transferMotor.throttle = 0.0;
-
-//        detecting = balls.size != 4
-
-
     }
 
     fun transferShoot() = infinite {
