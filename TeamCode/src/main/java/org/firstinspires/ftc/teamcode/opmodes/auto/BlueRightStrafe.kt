@@ -1,31 +1,25 @@
-package org.firstinspires.ftc.teamcode
+package org.firstinspires.ftc.teamcode.opmodes.auto
 
 import com.pedropathing.api.Paths
 import com.pedropathing.api.PoseFactory
-import com.pedropathing.follower.Follower
 import com.pedropathing.ivy.Command
 import com.pedropathing.ivy.Scheduler
-import com.pedropathing.ivy.Scheduler.schedule
 import com.pedropathing.ivy.groups.Groups.sequential
 import com.pedropathing.ivy.pedro.PedroCommands.follow
-import com.pedropathing.math.Pose
 import com.pedropathing.paths.Path
 import dev.nextftc.robot.opmode.NextAutonomous
 import dev.nextftc.robot.opmode.NextOpMode
-import org.firstinspires.ftc.teamcode.pedro.Constants
+import org.firstinspires.ftc.teamcode.BiobuzzBot
+import org.firstinspires.ftc.teamcode.OpModeStorage
 
-@NextAutonomous(name = "BlueAuto", preselectTeleop = "New TeleOp For Competition")
-class BlueAuto (
-    val robot: BiobuzzBot,
-) : NextOpMode(robot) {
-
+@NextAutonomous(name="Blue Right Flower to Park", group="Blue Autos")
+class BlueRightStrafe(val robot: BiobuzzBot) : NextOpMode(robot) {
     private val poseFactory = PoseFactory.degrees()
 
-    private val start = poseFactory.of(108.9217, 7.9743, 0.0)
-    private val point1 = poseFactory.of(132.0444, 24.9139, 180.0)
+    private val start = poseFactory.of(8.1902, 59.133, 90.0)
+    private val point1 = poseFactory.of(11.3629, 97.1205, 0.0)
+    private val point1Control1 = poseFactory.of(40.4792, 78.9064, 0.0)
 
-
-    // Autonomous routine
     fun autoRoutine(): Command = sequential(
         follow(robot.pedro.follower, path1()),
     )
@@ -44,7 +38,10 @@ class BlueAuto (
 
     }
 
+    override fun end() {
+        super.end()
+        OpModeStorage.autonomousEndPose = robot.pedro.follower.pose()
+    }
 
-    fun path1(): Path = Paths.line(start, point1).linear(start, point1)
-
+    fun path1(): Path = Paths.curve(start, point1Control1, point1).constant(point1)
 }

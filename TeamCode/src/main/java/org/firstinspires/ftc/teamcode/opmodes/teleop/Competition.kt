@@ -3,20 +3,16 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.pedropathing.follower.ManualDrive
-import com.pedropathing.ivy.commands.Commands.infinite
-import com.pedropathing.ivy.commands.Commands.instant
 import com.pedropathing.ivy.commands.Commands.waitMs
-import com.pedropathing.ivy.groups.Groups.parallel
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver
 import dev.nextftc.robot.Telemetry
-import dev.nextftc.robot.coroutine.command
 import dev.nextftc.robot.opmode.NextOpMode
 import dev.nextftc.robot.opmode.NextTeleop
 import dev.nextftc.robot.triggers.CommandGamepad
 import dev.nextftc.units.RotationsPerMinute
-import dev.nextftc.units.inches
 import org.firstinspires.ftc.teamcode.BiobuzzBot
+import org.firstinspires.ftc.teamcode.OpModeStorage
 import org.firstinspires.ftc.teamcode.mechanisms.SizeState
-import kotlin.math.abs
 
 const val MIN_TRIGGER = 0.1
 const val INTAKE_VOLTAGE = 6.0
@@ -28,10 +24,11 @@ const val DEFAULT_TURRET_POS = 0.5
 
 const val SHOOTER_RPM_INCREMENT = 0.2
 
-@NextTeleop(name = "New TeleOp For Competition")
+@NextTeleop(name = "Competition TeleOp")
 class NewTele(
     val robot: BiobuzzBot,
 ) : NextOpMode(robot) {
+
     override fun periodic() {
         Telemetry.log(
             "Current RPM: ",
@@ -68,20 +65,6 @@ class NewTele(
 
         FtcDashboard.getInstance().sendTelemetryPacket(packet)
 
-//        @Suppress("MaxLineLength", "MagicNumber")
-//        Telemetry.log(
-//            (
-//                abs(
-//                    robot.shooter.shooterMotor.encoderVelocity
-//                        .into(RotationsPerMinute) - robot.turret.sizeState.rpm * 500,
-//                ) <= 50
-//            ).toString(),
-//            abs(
-//                robot.shooter.shooterMotor.encoderVelocity
-//                    .into(RotationsPerMinute) - robot.turret.sizeState.rpm * 500,
-//            ),
-//        )
-
         val powers = ManualDrive.fieldCentric(
             -gamepad1.left_stick_y.toDouble(),
             -gamepad1.left_stick_x.toDouble(),
@@ -93,16 +76,16 @@ class NewTele(
     }
 
     override fun start() {
-//        robot.drivetrain.startDrivetrain(gamepad1)
+        robot.pedro.follower.setPose(OpModeStorage.autonomousEndPose)
+        robot.pedro.follower.update()
+
         val driver = CommandGamepad(gamepad1)
         val aux = CommandGamepad(gamepad2)
 
         robot.turret.setSizeState(SizeState.POLLEN)
 
         driver.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.intake.setVoltage(INTAKE_VOLTAGE))
-
         driver.a.onTrue(robot.flower.flip())
-
         driver.y.onTrue(robot.resetPos())
 
         aux.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.shoot()).onFalse(waitMs(800.0).then(robot.transfer.next90increment()))
