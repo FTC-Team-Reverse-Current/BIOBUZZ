@@ -19,8 +19,6 @@ class RedAuto (
     val robot: BiobuzzBot,
 ) : NextOpMode(robot) {
 
-    private lateinit var follower: Follower
-
     private val poseFactory = PoseFactory.degrees()
 
     private val start = poseFactory.of(33.07, 133.6857, 0.0)
@@ -29,34 +27,21 @@ class RedAuto (
 
     // Autonomous routine
     fun autoRoutine(): Command = sequential(
-        follow(follower, path1()),
+        follow(robot.pedro.follower, path1()),
     )
 
     override fun start() {
         Scheduler.reset()
-        follower = Constants.create(hardwareMap)
-        follower.setPose(start)
-        follower.update()
+        robot.pedro.follower.setPose(start)
+        robot.pedro.follower.update()
 
-        schedule(autoRoutine())
-
+        autoRoutine().schedule()
 
     }
 
     override fun periodic() {
-            follower.update()
-            Scheduler.execute()
+        Scheduler.execute()
 
-            telemetry.addData("x", follower.pose().x())
-            telemetry.addData("y", follower.pose().y())
-            telemetry.addData("heading", follower.pose().heading())
-
-            if (follower.currentPath() != null) {
-                telemetry.addData("Current path distance remaining", follower.distanceToEndpoint())
-                telemetry.addData("Path number", follower.pathIndex())
-            }
-
-            telemetry.update()
     }
 
     fun path1(): Path = Paths.line(start, point1).linear(start, point1)

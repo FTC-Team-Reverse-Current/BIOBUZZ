@@ -34,7 +34,7 @@ const val SHOOTER_RPM_INCREMENT = 0.2
 @NextTeleop(name = "New TeleOp For Competition")
 class NewTele(
     val robot: BiobuzzBot,
-) : BlazeOpMode(robot, BlazeBulkReadHook(NextLynxModule.Type.EXPANSION_HUB, false)) {
+) : BlazeOpMode(robot, BlazeBulkReadHook(NextLynxModule.Type.CONTROL_HUB, false)) {
     override fun periodic() {
 
         Telemetry.log(
