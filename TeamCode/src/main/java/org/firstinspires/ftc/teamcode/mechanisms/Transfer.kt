@@ -91,6 +91,8 @@ class Transfer : Mechanism {
             desiredPosition, transferMotor.encoderPosition.into(Rotations) * 530
         );
 
+        transferMotor.throttle = output
+
         packet.put("TransferPositionTick", transferMotor.encoderPosition.into(Rotations) * 530)
         packet.put("TransferThrottle", transferMotor.throttle)
         packet.put("TransferOutput", output)
@@ -125,6 +127,7 @@ class Transfer : Mechanism {
 
     fun next90increment() = coroutine {
         desiredPosition = floor(((transferMotor.encoderPosition.into(Rotations) * 530) / quarterTurn) )* quarterTurn
+        pidEnabled = true
         await(turnTransfer())
     }
 }

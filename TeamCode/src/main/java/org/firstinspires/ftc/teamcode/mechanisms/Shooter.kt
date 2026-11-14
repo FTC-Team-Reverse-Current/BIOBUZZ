@@ -57,7 +57,6 @@ class Shooter : Mechanism {
     }.setEnd {
         updatePiddle = false
         shooterMotor.throttle = 0.0
-
     }
 
     fun setVoltage(voltage: Double) {

@@ -125,6 +125,9 @@ class NewTele(
             },
         )
 
+        aux.dpadUp.onTrue(robot.shooter.increaseRPM())
+        aux.dpadDown.onTrue(robot.shooter.decreaseRPM())
+
         // TODO Auto
     }
 }
