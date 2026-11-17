@@ -38,11 +38,11 @@ class NewTele(
         )
         Telemetry.log(
             "Robot Pos X:",
-            robot.pedro.follower.pose().y()
+            robot.pedro.follower.pose().x()
         )
         Telemetry.log(
             "Robot Pos Y:",
-            robot.pedro.follower.pose().x()
+            robot.pedro.follower.pose().y()
         )
         Telemetry.log(
             "Robot Pos Heading:",
