@@ -66,20 +66,17 @@ class Turret : Mechanism {
 
     var sizeState: SizeState = SizeState.POLLEN
 
-    fun autoAim() = infinite {
+    override val defaultCommand: Command = infinite {
         val pose = poseFunc()
-        var closest = Pair(Pose(0.0, 0.0), Double.POSITIVE_INFINITY)
-        for (hive in HivePositions.entries) {
-            val dist = pose.distance(hive.pos)
-            if (dist < closest.second) {
-                closest = Pair(hive.pos, dist)
-            }
-        }
 
-        val dx = closest.first.x() - pose.x()
+        val closest = HivePositions.entries.minByOrNull { pose.distance(it.pos) }
+
+        if (closest == null) return@infinite
+
+        val dx = closest.pos.x() - pose.x()
 
         // Make it negative because Pedro makes left positive and right negative
-        val dy = -(closest.first.y() - pose.y())
+        val dy = -(closest.pos.y() - pose.y())
 
         // Remember X and Y are flipped, so you need to swap them
         val fieldRelativeAngle = atan2(dx, dy)
@@ -92,8 +89,8 @@ class Turret : Mechanism {
         // Don't use built-in PID controller
         this.controller.setOutputBounds(-1.0, 1.0)
 
-        val desiredTicks = robotRelativeDegrees * (14/180)
-        val output = this.controller.calculate(desiredTicks, turretMotor.absoluteEncoderPosition.into(Degrees) * (14/180))
+        val desiredTicks = robotRelativeDegrees * (14.0/180.0)
+        val output = this.controller.calculate(desiredTicks, turretMotor.absoluteEncoderPosition.into(Degrees) * (14.0/180.0))
 
         turretMotor.throttle = output
     }
