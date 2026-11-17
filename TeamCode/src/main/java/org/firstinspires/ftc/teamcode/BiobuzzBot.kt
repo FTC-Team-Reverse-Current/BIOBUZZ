@@ -35,7 +35,7 @@ class BiobuzzBot : NextRobot {
     val drivetrain = Drivetrain()
     val intake = Intake()
 
-    val shooter = Shooter()
+    val shooter = Shooter{pedro.follower.pose()}
     val flower = Flower()
     val pedro = PedroMechanism(Constants::create)
     val transfer = Transfer()

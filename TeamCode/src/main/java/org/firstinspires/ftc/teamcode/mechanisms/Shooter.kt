@@ -10,15 +10,31 @@ import dev.nextftc.units.volts
 import com.aaravdhawan25.pidautotuner.PIDFController;
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.pedropathing.math.Pose
 import dev.nextftc.control.feedback.PIDController
 import dev.nextftc.units.Rotations
+import dev.nextftc.units.measuretypes.Distance
 import dev.nextftc.units.rotationsPerMinute
 import kotlin.math.abs
 
+enum class HivePositiones(
+    var pos: Pose
+) {
+    RED_BOTTOM(Pose(58.0, 58.0)),
+    RED_TOP(Pose(58.0, 83.0)),
+    BLUE_BOTTOM(Pose(83.0, 58.0)),
+    BLUE_TOP(Pose(83.0, 83.0)),
+}
 class Shooter : Mechanism {
     val shooterMotor = NextMotor("ShooterMotor", Rotations.of(1/28.0))
     val shooterController = PIDFController(0.02876, 0.0, 0.00077, 0.000642)
-    var rpm = 3500;
+    var rpm : Double = 3500.0;
+
+    lateinit var follower: () -> Pose
+
+    constructor(poseFunc: () -> Pose) {
+        this.follower = poseFunc
+    }
     val getRPM = { rpm }
 
     constructor() {
@@ -56,7 +72,19 @@ class Shooter : Mechanism {
         infinite {
             shooterMotor.throttle = throttle
         }
-
+    fun getDistance() = instant {
+        val pose = follower()
+        var closest = Pair(Pose(0.0, 0.0), Double.POSITIVE_INFINITY)
+        var truedist = 0.0
+        for (hive in HivePositions.entries) {
+            val dist = pose.distance(hive.pos)
+            if (dist <= truedist) {
+                truedist = dist
+            }
+        }
+    fun getRPM(distance: Double){
+        rpm = distance*2
+    }
     fun increaseRPM() = instant{
         rpm += 50
     }
