@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.mechanisms
 import com.aaravdhawan25.pidautotuner.PIDFController
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.pedropathing.ivy.Command
 import dev.nextftc.hardware.actuators.NextMotor
 import dev.nextftc.hardware.sensors.NextColorDistanceSensor
 import dev.nextftc.hardware.sensors.colors.ColorProfile
@@ -30,6 +31,12 @@ val red = ColorProfile(
     tolerance = NextColor.hsv(5f, 0.91f, 0.91f),
 )
 
+val blue = ColorProfile(
+    space = ColorSpace.HSV,
+    color = NextColor.hsv(230f, 0.885f, 0.908f),
+    tolerance = NextColor.hsv(5f, 0.91f, 0.91f),
+)
+
 enum class BallState(val color: ColorProfile) {
     RED(red),
     YELLOW(yellow)
@@ -54,19 +61,23 @@ class Transfer : Mechanism {
 
     val balls = mutableListOf(BallState.YELLOW, BallState.YELLOW, BallState.YELLOW, BallState.YELLOW)
 
-    override fun periodic() {
-//        val packet = TelemetryPacket()
-//        sensor.update()
-//        if (detecting) {
-//            if (sensor.isColor(yellow)) {
-//                turnTransfer(BallState.YELLOW).schedule();
-//            } else if (sensor.isColor(red)) {
-//                turnTransfer(BallState.RED).schedule();
-//            }
-//        }
-//        packet.put("Detecting", detecting)
-//        FtcDashboard.getInstance().sendTelemetryPacket(packet)
+
+
+    override val defaultCommand: Command = infinite {
+        val packet = TelemetryPacket()
+        sensor.update()
+        packet.put("Sensor Hue", sensor.hue)
+        packet.put("Sensor Saturation", sensor.saturation)
+        packet.put("Sensor Value", sensor.value)
+        packet.put("Color Detected", sensor.color)
+        if (sensor.isColor(yellow)||sensor.isColor(red)||sensor.isColor(blue)) {
+            packet.put("Is Turning?", "Yup!")
+            turnTransfer()
+        } else {
+            packet.put("Is Turning?", "Nope!")
+        }
     }
+
 
     fun turnTransfer() = coroutine {
         detecting = false
