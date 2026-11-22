@@ -2,9 +2,12 @@ package org.firstinspires.ftc.teamcode.mechanisms
 
 import com.aaravdhawan25.pidautotuner.PIDFController
 import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.canvas.Rotation
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.pedropathing.follower.Follower
+import com.pedropathing.follower.FollowerLog
 import com.pedropathing.ivy.Command
+import com.pedropathing.ivy.behaviors.InterruptedBehavior
 import com.pedropathing.math.Pose
 import com.pedropathing.math.Vector2D
 import dev.nextftc.control.geometry.Pose2d
@@ -15,6 +18,7 @@ import dev.nextftc.hardware.sensors.NextPinpoint
 import dev.nextftc.robot.Mechanism
 import dev.nextftc.robot.Telemetry
 import dev.nextftc.units.Degrees
+import dev.nextftc.units.Rotations
 import dev.nextftc.units.Unit
 import dev.nextftc.units.degrees
 import dev.nextftc.units.inches
@@ -53,21 +57,23 @@ enum class SizeState(
 }
 
 class Turret : Mechanism {
-    val turretMotor = NextMotor("TurretMotor")
+    val turretMotor = NextMotor("TurretMotor", (360.0/3180.0).degrees, cacheTolerance = 0.001)
     val sizeServo = NextServo("BackServo")
 
-    val controller = PIDFController(1.0, 0.0, 0.0, 0.0)
+    val controller = PIDFController(0.01674, 0.0, 0.00059, 0.0)
 
-    var poseFunc: () -> Pose
+    var poseFunction: () -> Pose
 
-    constructor(poseFunc: () -> Pose) {
-        this.poseFunc = poseFunc
+    constructor(poseFunction: () -> Pose) {
+        this.poseFunction = poseFunction
+        turretMotor.zeroPowerBehavior = NextMotor.ZeroPowerBehavior.BRAKE
     }
 
     var sizeState: SizeState = SizeState.POLLEN
 
-    override val defaultCommand: Command = infinite {
-        val pose = poseFunc()
+    override var defaultCommand: Command = infinite {
+        val packet = TelemetryPacket()
+        val pose = poseFunction()
 
         val closest = HivePositions.entries.minByOrNull { pose.distance(it.pos) }
 
@@ -80,56 +86,44 @@ class Turret : Mechanism {
 
         // Remember X and Y are flipped, so you need to swap them
         val fieldRelativeAngle = atan2(dx, dy)
+        packet.put("Field Relative Angle", fieldRelativeAngle)
 
-        // Subtract PI from the robot heading to change its range from (0 - 2pi) => (-pi - pi)
-        val robotRelativeAngle = fieldRelativeAngle - (pose.heading() - Math.PI)
+        val heading = pose.heading()
+        packet.put("Command Reported Heading", heading)
 
-        val robotRelativeDegrees = Math.toDegrees(robotRelativeAngle)
+        val robotRelativeAngle = fieldRelativeAngle - heading
+        packet.put("Robot Relative Angle", robotRelativeAngle)
+
+        // In the case that robotRelative is negative you need to convert it
+        val positiveRobotRadians = if (robotRelativeAngle < 0.0) (robotRelativeAngle + (2.0 * PI)) else robotRelativeAngle
+        packet.put("Positive Robot Radians", positiveRobotRadians)
+
+        // Then convert it to revolutions so we can convert it to ticks
+        val positiveRobotTicks = (positiveRobotRadians / (2.0 * PI)) * 3180.0
+        packet.put("Positive Robot Ticks", positiveRobotTicks)
 
         // Don't use built-in PID controller
-        this.controller.setOutputBounds(-1.0, 1.0)
+        this.controller.setOutputBounds(-0.5, 0.5)
 
-        val desiredTicks = robotRelativeDegrees * (14.0/180.0)
-        val output = this.controller.calculate(desiredTicks, turretMotor.absoluteEncoderPosition.into(Degrees) * (14.0/180.0))
+        var currentPos = turretMotor.encoderPosition.into(Rotations) * 3180.0
 
-        turretMotor.throttle = output
-    }
+        var error = positiveRobotTicks - currentPos
+        packet.put("Error", error)
 
-//    fun autoAim() = infinite {
-//        val pose = follower()
-//        var closest = Pair(Pose(0.0, 0.0), Double.POSITIVE_INFINITY)
-//        for (hive in HivePositions.entries) {
-//            val dist = pose.distance(hive.pos)
-//            if (dist < closest.second) {
-//                closest = Pair(hive.pos, dist)
-//            }
-//        }
-//
-//        val dx = closest.first.x() - pose.x()
-//        val dy = closest.first.y() - pose.y()
-//
-//        val targetAngle = atan2(dy, dx) * (180 / PI)
-//        val robotAngle = pose.heading() * (180 / PI)
-//
-//        val relativeAngle = targetAngle - robotAngle
-//
-//        val normalizedAngle = ((relativeAngle % 360.0) + 360.0) % 360.0
-//
-//        // TODO: Change based on totol range (Here it is 0.0 to 1.0)
-//        val desiredAngle = (normalizedAngle / 360)
-//        turretServo.position = (desiredAngle).coerceIn(0.1, 0.9)
-//
-//        val packet = TelemetryPacket()
-//        packet.put("ClosestHive", closest.first)
-//        packet.put("targetAngle", targetAngle)
-//        packet.put("RobotAngle", robotAngle)
-//        packet.put("RelativeAngle", relativeAngle)
-//        packet.put("NormalizedAngle", normalizedAngle)
-//        packet.put("DesiredAngle", desiredAngle)
-//        packet.put("FinalAngle", desiredAngle.coerceIn(0.1, 0.9))
-//
-//        FtcDashboard.getInstance().sendTelemetryPacket(packet)
-//    }
+        var output = this.controller.calculate(
+            positiveRobotTicks,
+            currentPos
+        )
+
+        turretMotor.throttle = -output
+        packet.put("Output", output)
+
+        packet.put("Closest Hive", closest.name)
+        packet.put("Desired Ticks", positiveRobotTicks)
+        packet.put("Current Pos", currentPos)
+
+        FtcDashboard.getInstance().sendTelemetryPacket(packet)
+    }.setEnd { turretMotor.throttle = 0.0 }.setInterruptedBehavior(InterruptedBehavior.END)
 
     fun setSizeState(state: SizeState) =
         instant {
@@ -138,16 +132,22 @@ class Turret : Mechanism {
         }
 
     fun turnTurret(turnSpeed: () -> Double) = infinite {
-        this.turretMotor.throttle = turnSpeed() * 0.1
+        this.turretMotor.throttle = turnSpeed() / 2.0
     }
 
-    fun turretGoto(position: Double) = instant {
-        // Half a rotation since the input will be from -180 to 180
-        val desiredTicks = position * (14/180)
-        while (abs(position - Math.toDegrees(turretMotor.absoluteEncoderPosition.magnitude)) > 10.0) {
-            this.controller.setOutputBounds(-1.0, 1.0)
-            val output = controller.calculate(desiredTicks, Math.toDegrees(turretMotor.absoluteEncoderPosition.magnitude) * (14/180))
-            turretMotor.throttle = output
+    fun turretGoto(position: Double) = infinite {
+        val packet = TelemetryPacket()
+        val desiredTicks = (position / 360.0) * 560.0
+        val currentTicks = turretMotor.encoderPosition.into(Rotations) * 560.0
+
+        controller.setOutputBounds(-1.0, 1.0)
+
+        packet.put("Desired Position", desiredTicks)
+        packet.put("Current Position", currentTicks)
+
+        if (abs(desiredTicks - currentTicks) > 10.0) {
+            val output = controller.calculate(desiredTicks, currentTicks)
+            packet.put("Output", output)
         }
-    }
+    }.setEnd { turretMotor.throttle = 0.0 }.setInterruptedBehavior(InterruptedBehavior.END)
 }

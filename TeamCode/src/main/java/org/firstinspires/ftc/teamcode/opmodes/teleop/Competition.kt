@@ -50,7 +50,7 @@ class NewTele(
         )
         Telemetry.log(
             "Servo Pos:",
-            robot.turret.turretServo.position
+            robot.turret.turretMotor.absoluteEncoderPosition
         )
 
         val packet = TelemetryPacket()
@@ -91,7 +91,7 @@ class NewTele(
         aux.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.shoot()).onFalse(waitMs(800.0).then(robot.transfer.next90increment()))
         aux.b.onTrue(robot.transfer.turnTransfer())
         aux.y.onTrue(robot.transfer.dumpSingle())
-        aux.a.whileTrue(robot.turret.autoAim())
+        aux.a.whileTrue(robot.turret.turretGoto(180.0))
 
         aux.leftStickX.isBetween(ANALOG_POS_RANGE).whileTrue(
             robot.turret.turnTurret {
