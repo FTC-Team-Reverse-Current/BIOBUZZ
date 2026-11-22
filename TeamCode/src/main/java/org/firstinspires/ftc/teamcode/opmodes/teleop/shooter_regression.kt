@@ -5,8 +5,8 @@ import com.pedropathing.ivy.commands.Commands.infinite
 import com.pedropathing.math.Pose
 
 
-class shooterRegression(val distanceFromHub: Int) {
-    var rpmNeeded: Int = 2000 //do the mathy maths here for the regression
+class shooterRegression(val distanceFromHub: Double) {
+    var rpmNeeded: Double = 2000.0 //do the mathy maths here for the regression
 }
 enum class HivePositions(
     var pos: Pose
@@ -31,15 +31,12 @@ val defaultCommand: Command = infinite {
 
     val dx = closest.first.x() - pose.x()
     val dy = closest.first.y() - pose.y()
-
-}
-
-fun main() {
     val hubX = 3.0
     val hubY = 4.0
     HivePositions.RED_RIGHT_POS.pos
-    val distance = Math.hypot(hubX, hubY).toInt()
+    val distance = closest.second
     val mathcalculate = shooterRegression(distance)
     val rpmneededval = mathcalculate.rpmNeeded
     println(rpmneededval)
+
 }
