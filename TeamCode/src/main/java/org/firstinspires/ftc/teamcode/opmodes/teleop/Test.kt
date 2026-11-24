@@ -23,8 +23,8 @@ class Test(
 
 //        gp1.x.onTrue(robot.transfer.transferShoot()).onFalse(waitMs(200.0).then(robot.transfer.next90increment()))
         gp1.y.onTrue(robot.transfer.dumpSingle())
-        gp1.dpadUp.onTrue(robot.shooter.increaseRPM())
-        gp1.dpadDown.onTrue(robot.shooter.decreaseRPM())
+        //gp1.dpadUp.onTrue(robot.shooter.increaseRPM())
+        //gp1.dpadDown.onTrue(robot.shooter.decreaseRPM())
 
     }
 }

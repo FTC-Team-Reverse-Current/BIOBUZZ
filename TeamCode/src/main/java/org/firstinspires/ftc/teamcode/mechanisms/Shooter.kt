@@ -92,4 +92,4 @@ class Shooter : Mechanism {
     fun decreaseRPM() = instant{
         rpm -= 50
     }
-}
+}}

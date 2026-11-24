@@ -89,8 +89,8 @@ class NewTele(
         driver.y.onTrue(robot.resetPos())
 
         aux.rightTrigger.isOver(MIN_TRIGGER).whileTrue(robot.shoot()).onFalse(waitMs(800.0).then(robot.transfer.next90increment()))
-        aux.b.onTrue(robot.transfer.turnTransfer())
-        aux.y.onTrue(robot.transfer.dumpSingle())
+        aux.b.whileTrue(robot.transfer.turnTransfer())
+        aux.y.whileTrue(robot.transfer.dumpSingle())
         aux.a.whileTrue(robot.turret.autoAim())
 
         aux.leftStickX.isBetween(ANALOG_POS_RANGE).whileTrue(

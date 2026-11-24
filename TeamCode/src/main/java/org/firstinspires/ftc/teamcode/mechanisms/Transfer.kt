@@ -21,14 +21,14 @@ import kotlin.math.floor
 
 val yellow = ColorProfile(
     space = ColorSpace.HSV,
-    color = NextColor.hsv(90f, 0.667f, 0.0118f),
-    tolerance = NextColor.hsv(20f, 0.3f, 1f),
+    color = NextColor.hsv(90f, 1.0f, 0.008f),
+    tolerance = NextColor.hsv(2f, 0.1f, 0.2f),
 )
 
 val red = ColorProfile(
     space = ColorSpace.HSV,
-    color = NextColor.hsv(15f, 0.6667f, 0.0236f),
-    tolerance = NextColor.hsv(5f, 0.91f, 0.91f),
+    color = NextColor.hsv(30f, 0.8f, 0.01f),
+    tolerance = NextColor.hsv(10f, 0.91f, 0.91f),
 )
 
 val blue = ColorProfile(
@@ -76,6 +76,7 @@ class Transfer : Mechanism {
         } else {
             packet.put("Is Turning?", "Nope!")
         }
+        FtcDashboard.getInstance().sendTelemetryPacket(packet)
     }
 
 
